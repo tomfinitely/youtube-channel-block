@@ -1,0 +1,175 @@
+/**
+ * Frontend styles for YouTube Block
+ */
+
+// Import Splide CSS theme
+@use '@splidejs/splide/css';
+
+.wp-block-youtube-channel-block {
+	.youtube-channel-block-container {
+		margin: 20px 0;
+		padding: 0;
+		background: transparent;
+	}
+
+	.youtube-channel-block-header {
+		margin-bottom: 20px;
+		padding-bottom: 15px;
+		border-bottom: 1px solid #eee;
+
+		h3 {
+			margin: 0 0 10px 0;
+			color: #1a1a1a;
+			font-size: 24px;
+			font-weight: 600;
+		}
+
+		.youtube-channel-block-meta {
+			display: flex;
+			gap: 15px;
+			font-size: 14px;
+			color: #666;
+
+			.last-updated {
+				background: #f0f0f0;
+				padding: 6px 12px;
+				border-radius: 4px;
+				font-size: 12px;
+			}
+
+			.auto-update-badge {
+				background: #e3f2fd;
+				color: #1976d2;
+				padding: 6px 12px;
+				border-radius: 4px;
+				font-weight: 500;
+				font-size: 12px;
+			}
+		}
+	}
+
+	.youtube-channel-block-inner-blocks {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: var(--wp--style--block-gap, 20px);
+
+		.wp-block-embed {
+			margin: 0;
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			transition: box-shadow 0.3s ease;
+
+			&:hover {
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+			}
+
+			.wp-block-embed__wrapper {
+				position: relative;
+				width: 100%;
+				height: 0;
+				padding-bottom: 56.25%; // 16:9 aspect ratio
+
+				iframe {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					border: none;
+				}
+			}
+		}
+	}
+
+	&.is-layout-grid {
+		.youtube-channel-block-inner-blocks {
+			display: grid;
+			gap: var(--wp--style--block-gap, 1rem);
+			&.has-columns-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+			&.has-columns-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+			&.has-columns-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+			&.has-columns-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+			&.has-columns-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+			&.has-columns-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+		}
+	}
+
+	&.is-layout-carousel {
+		.splide {
+			.splide__track {
+				overflow: hidden;
+			}
+			
+			.splide__list {
+				display: flex;
+			}
+			
+			// Style the embed blocks as slides
+			.wp-block-embed {
+				height: 100%;
+				
+				.wp-block-embed__wrapper {
+					height: 200px; // Fixed height for carousel slides
+				}
+
+				&.wp-has-aspect-ratio {
+					flex-shrink: 0;
+					align-self: stretch;
+					min-height: initial;
+					min-width: initial;
+				}
+			}
+		}
+
+		.splide__pagination { 
+			
+			&.splide__pagination--ltr {
+				display: flex;
+				align-content: center;
+				align-items: center;
+				justify-content: center;
+			}
+		}
+
+		.splide__arrows.splide__arrows--ltr {
+			display: flex;
+			flex-flow: row;
+			justify-content: space-between;
+		  }
+	}
+
+	// Responsive adjustments
+	@media (max-width: 768px) {
+		.youtube-channel-block-inner-blocks {
+			grid-template-columns: 1fr;
+			gap: var(--wp--style--block-gap, 15px);
+		}
+
+		.youtube-channel-block-header {
+			.youtube-channel-block-meta {
+				flex-direction: column;
+				gap: 8px;
+			}
+		}
+	}
+
+	@media (max-width: 480px) {
+		.youtube-channel-block-header {
+			h3 {
+				font-size: 20px;
+			}
+
+			.youtube-channel-block-meta {
+				font-size: 12px;
+
+				.last-updated,
+				.auto-update-badge {
+					padding: 4px 8px;
+					font-size: 11px;
+				}
+			}
+		}
+	}
+
+}

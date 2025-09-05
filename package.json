@@ -1,0 +1,32 @@
+{
+	"name": "youtube-channel-block",
+	"version": "0.1.0",
+	"description": "A WordPress block that fetches and displays YouTube videos from channels or playlists using the YouTube Data API with automatic updates via cron jobs.",
+	"author": "Tom Finley",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"homepage": "https://github.com/tomfinitely/youtube-channel-block",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tomfinitely/youtube-channel-block.git"
+	},
+	"bugs": {
+		"url": "https://github.com/tomfinitely/youtube-channel-block/issues"
+	},
+	"keywords": ["wordpress", "block", "gutenberg", "youtube", "videos", "channel", "playlist", "api"],
+	"scripts": {
+		"build": "wp-scripts build --blocks-manifest",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start --blocks-manifest"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.22.0"
+	},
+	"dependencies": {
+		"@splidejs/splide": "^4.1.4"
+	}
+}
