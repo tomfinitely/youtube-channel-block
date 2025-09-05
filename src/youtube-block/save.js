@@ -17,15 +17,20 @@ import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor';
  * @return {Element} Element to render.
  */
 export default function save({ attributes }) {
-	const { lastUpdated, autoUpdate, updateFrequency, layout, columns, carouselVisible, carouselAutoplay, carouselInterval, align } = attributes;
+	const { lastUpdated, autoUpdate, updateFrequency, layout, columns, carouselVisible, carouselAutoplay, carouselInterval, showTitles, titlePosition, mediaPlayerSidebarVideos, align } = attributes;
 
 	const wrapperProps = useBlockProps.save({
 		className: [
 			'wp-block-youtube-channel-block',
 			align ? `align${align}` : '',
+			layout === 'list' ? 'is-layout-list' : '',
 			layout === 'grid' ? 'is-layout-grid' : '',
 			layout === 'carousel' ? 'is-layout-carousel' : '',
+			showTitles ? 'has-titles' : '',
+			showTitles ? `title-position-${titlePosition}` : ''
 		].filter(Boolean).join(' '),
+		'data-show-titles': String(showTitles),
+		'data-title-position': titlePosition,
 	});
 
 	// For carousel layout, inject Splide classes into inner blocks

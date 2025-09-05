@@ -75,6 +75,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		carouselVisible,
 		carouselAutoplay,
 		carouselInterval,
+		showTitles,
+		titlePosition,
+		mediaPlayerSidebarVideos,
 		align 
 	} = attributes;
 
@@ -144,6 +147,12 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 				apiKey: localApiKey,
 			});
 			setSourceChangeNotice(''); // Clear any source change notice
+			
+			// Show cache status
+			if (data.cached) {
+				setSourceChangeNotice(__('Data loaded from cache. Use "Clear Cache" to force fresh data.', 'youtube-channel-block'));
+				setTimeout(() => setSourceChangeNotice(''), 5000);
+			}
 
 		} catch (err) {
 			console.error('YouTube Block Error:', err);
@@ -200,12 +209,18 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		className: [
 			'wp-block-youtube-channel-block',
 			align ? `align${align}` : '',
+			layout === 'list' ? 'is-layout-list' : '',
 			layout === 'grid' ? 'is-layout-grid' : '',
-			layout === 'carousel' ? 'is-layout-carousel' : ''
+			layout === 'carousel' ? 'is-layout-carousel' : '',
+			layout === 'media-player' ? 'is-layout-media-player' : '',
+			showTitles ? 'has-titles' : '',
+			showTitles ? `title-position-${titlePosition}` : ''
 		].filter(Boolean).join(' '),
 		'data-carousel-visible': layout === 'carousel' ? String(carouselVisible) : undefined,
 		'data-carousel-autoplay': layout === 'carousel' ? String(carouselAutoplay) : undefined,
 		'data-carousel-interval': layout === 'carousel' ? String(carouselInterval) : undefined,
+		'data-show-titles': String(showTitles),
+		'data-title-position': titlePosition,
 	});
 
 	// For carousel layout, inject Splide classes into inner blocks
@@ -238,12 +253,19 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		{ label: __('List (vertical)', 'youtube-channel-block'), value: 'list' },
 		{ label: __('Grid', 'youtube-channel-block'), value: 'grid' },
 		{ label: __('Carousel', 'youtube-channel-block'), value: 'carousel' },
+		{ label: __('Media Player', 'youtube-channel-block'), value: 'media-player' },
 	];
 
 	const frequencyOptions = [
 		{ label: __('Hourly', 'youtube-channel-block'), value: 'hourly' },
 		{ label: __('Daily', 'youtube-channel-block'), value: 'daily' },
 		{ label: __('Weekly', 'youtube-channel-block'), value: 'weekly' },
+	];
+
+	const titlePositionOptions = [
+		{ label: __('Above video', 'youtube-channel-block'), value: 'above' },
+		{ label: __('Left of video', 'youtube-channel-block'), value: 'left' },
+		{ label: __('Right of video', 'youtube-channel-block'), value: 'right' },
 	];
 
 	const fetchVideos = async () => {
@@ -293,6 +315,12 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 				apiKey: localApiKey,
 			});
 			setSourceChangeNotice(''); // Clear any source change notice
+			
+			// Show cache status
+			if (data.cached) {
+				setSourceChangeNotice(__('Data loaded from cache. Use "Clear Cache" to force fresh data.', 'youtube-channel-block'));
+				setTimeout(() => setSourceChangeNotice(''), 5000);
+			}
 
 		} catch (err) {
 			console.error('YouTube Block Error:', err);
@@ -310,6 +338,21 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 			lastUpdated: '',
 		});
 		setSourceChangeNotice(''); // Clear any source change notice
+	};
+
+	const clearCache = async () => {
+		try {
+			await apiFetch({
+				path: '/youtube-channel-block/v1/clear-cache',
+				method: 'POST',
+			});
+			setAttributes({ error: '' });
+			// Show success message
+			setSourceChangeNotice(__('Cache cleared successfully. Next fetch will get fresh data.', 'youtube-channel-block'));
+			setTimeout(() => setSourceChangeNotice(''), 3000);
+		} catch (err) {
+			setAttributes({ error: `Cache clear failed: ${err.message}` });
+		}
 	};
 
 	// Show placeholder if no source URL is provided
@@ -440,6 +483,40 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 							/>
 						</>
 					)}
+					{layout === 'list' && (
+						<>
+							<ToggleControl
+								label={__('Show video titles', 'youtube-channel-block')}
+								checked={showTitles}
+								onChange={(value) => setAttributes({ showTitles: value })}
+							/>
+							{showTitles && (
+								<SelectControl
+									label={__('Title position', 'youtube-channel-block')}
+									value={titlePosition}
+									options={titlePositionOptions}
+									onChange={(value) => setAttributes({ titlePosition: value })}
+								/>
+							)}
+						</>
+					)}
+					{layout === 'media-player' && (
+						<>
+							<RangeControl
+								label={__('Sidebar videos', 'youtube-channel-block')}
+								value={mediaPlayerSidebarVideos}
+								onChange={(value) => setAttributes({ mediaPlayerSidebarVideos: value })}
+								min={3}
+								max={10}
+								help={__('Number of videos to show in the sidebar', 'youtube-channel-block')}
+							/>
+							<ToggleControl
+								label={__('Show video titles', 'youtube-channel-block')}
+								checked={showTitles}
+								onChange={(value) => setAttributes({ showTitles: value })}
+							/>
+						</>
+					)}
 				</PanelBody>
 
 				<PanelBody title={__('Auto Update', 'youtube-channel-block')} initialOpen={false}>
@@ -469,6 +546,11 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 									{__('Last updated:', 'youtube-channel-block')} {new Date(lastUpdated).toLocaleString()}
 								</span>
 							)}
+							{sourceChangeNotice && sourceChangeNotice.includes('cache') && (
+								<span className="cache-status">
+									{__('📦 Cached', 'youtube-channel-block')}
+								</span>
+							)}
 							{autoUpdate && (
 								<span className="auto-update-badge">
 									{__('Auto-update:', 'youtube-channel-block')} {updateFrequency}
@@ -490,6 +572,14 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 							onClick={clearVideos}
 						>
 							{__('Clear Videos', 'youtube-channel-block')}
+						</Button>
+
+						<Button
+							variant="tertiary"
+							onClick={clearCache}
+							title={__('Clear cached data to force fresh API calls', 'youtube-channel-block')}
+						>
+							{__('Clear Cache', 'youtube-channel-block')}
 						</Button>
 					</div>
 				</div>

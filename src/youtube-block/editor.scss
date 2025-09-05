@@ -120,15 +120,16 @@
 	}
 
 	.youtube-channel-block-inner-blocks {
+		// Default to vertical list layout
+		display: flex;
+		flex-direction: column;
+		gap: var(--wp--style--block-gap, 20px);
+
 		.wp-block-embed {
-			margin-bottom: 20px;
+			margin: 0; // Remove margin since we're using gap
 			border: 1px solid #e0e0e0;
 			border-radius: 8px;
 			overflow: hidden;
-
-			&:last-child {
-				margin-bottom: 0;
-			}
 
 			.wp-block-embed__wrapper {
 				position: relative;
@@ -145,6 +146,37 @@
 					border: none;
 				}
 			}
+		}
+	}
+
+	// List layout (default) - already set above as flex column
+	&.is-layout-list {
+		.youtube-channel-block-inner-blocks {
+			display: flex;
+			flex-direction: column;
+			gap: var(--wp--style--block-gap, 20px);
+		}
+	}
+	
+	&.is-layout-grid {
+		.youtube-channel-block-inner-blocks {
+			display: grid;
+			flex-direction: unset; // Override the default flex
+			gap: var(--wp--style--block-gap, 1rem);
+			&.has-columns-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+			&.has-columns-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+			&.has-columns-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+			&.has-columns-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+			&.has-columns-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+			&.has-columns-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+		}
+	}
+
+	&.is-layout-carousel {
+		.youtube-channel-block-inner-blocks {
+			display: flex;
+			flex-direction: row;
+			overflow: hidden;
 		}
 	}
 

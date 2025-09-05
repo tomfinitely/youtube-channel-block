@@ -129,6 +129,27 @@ function youtube_block_register_rest_routes() {
 			),
 		),
 	) );
+
+	register_rest_route( 'youtube-channel-block/v1', '/clear-cache', array(
+		'methods' => 'POST',
+		'callback' => 'youtube_block_clear_cache',
+		'permission_callback' => function() {
+			return current_user_can( 'edit_posts' );
+		},
+	) );
+
+	register_rest_route( 'youtube-channel-block/v1', '/video-title/(?P<video_id>[a-zA-Z0-9_-]+)', array(
+		'methods' => 'GET',
+		'callback' => 'youtube_block_get_video_title',
+		'permission_callback' => '__return_true', // Public endpoint for frontend use
+		'args' => array(
+			'video_id' => array(
+				'required' => true,
+				'type' => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+			),
+		),
+	) );
 }
 
 /**
@@ -149,6 +170,21 @@ function youtube_block_fetch_videos( $request ) {
 		return new WP_Error( 'missing_url', __( 'Either channel URL or playlist URL is required.', 'youtube-channel-block' ), array( 'status' => 400 ) );
 	}
 
+	// Create cache key based on parameters
+	$cache_key = 'youtube_block_' . md5( $channel_url . $playlist_url . $api_key . $max_results . $order );
+	
+	// Try to get cached data first
+	$cached_data = get_transient( $cache_key );
+	if ( $cached_data !== false ) {
+		return rest_ensure_response( array(
+			'success' => true,
+			'videos' => $cached_data['videos'],
+			'count' => count( $cached_data['videos'] ),
+			'cached' => true,
+			'cache_expires' => $cached_data['expires'],
+		) );
+	}
+
 	try {
 		$videos = array();
 
@@ -160,10 +196,20 @@ function youtube_block_fetch_videos( $request ) {
 			$videos = youtube_block_fetch_playlist_videos( $playlist_url, $api_key, $max_results );
 		}
 
+		// Cache the results for 1 hour (3600 seconds)
+		// Use longer cache for better performance
+		$cache_duration = 3600; // 1 hour
+		$cache_data = array(
+			'videos' => $videos,
+			'expires' => time() + $cache_duration,
+		);
+		set_transient( $cache_key, $cache_data, $cache_duration );
+
 		return rest_ensure_response( array(
 			'success' => true,
 			'videos' => $videos,
 			'count' => count( $videos ),
+			'cached' => false,
 		) );
 
 	} catch ( Exception $e ) {
@@ -408,6 +454,184 @@ function youtube_block_update_block_videos( $request ) {
 		'success' => true,
 		'message' => __( 'Block updated successfully.', 'youtube-channel-block' ),
 	) );
+}
+
+/**
+ * Clear YouTube block cache
+ */
+function youtube_block_clear_cache( $request ) {
+	global $wpdb;
+	
+	// Clear all YouTube block transients
+	$wpdb->query( 
+		$wpdb->prepare( 
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+			'_transient_youtube_block_%'
+		)
+	);
+	
+	// Also clear transient timeout entries
+	$wpdb->query( 
+		$wpdb->prepare( 
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+			'_transient_timeout_youtube_block_%'
+		)
+	);
+	
+	return rest_ensure_response( array(
+		'success' => true,
+		'message' => __( 'Cache cleared successfully.', 'youtube-channel-block' ),
+	) );
+}
+
+/**
+ * Get individual video title
+ */
+function youtube_block_get_video_title( $request ) {
+	$video_id = $request->get_param( 'video_id' );
+	
+	if ( empty( $video_id ) ) {
+		return new WP_Error( 'missing_video_id', __( 'Video ID is required.', 'youtube-channel-block' ), array( 'status' => 400 ) );
+	}
+
+	// Check cache first
+	$cache_key = 'youtube_block_video_title_' . $video_id;
+	$cached_title = get_transient( $cache_key );
+	
+	if ( $cached_title !== false ) {
+		return rest_ensure_response( array(
+			'success' => true,
+			'title' => $cached_title,
+			'cached' => true,
+		) );
+	}
+
+	// Try to get API key from any existing YouTube block
+	$api_key = youtube_block_get_any_api_key();
+	
+	if ( empty( $api_key ) ) {
+		return new WP_Error( 'no_api_key', __( 'No YouTube API key found. Please configure a YouTube block first.', 'youtube-channel-block' ), array( 'status' => 400 ) );
+	}
+
+	try {
+		$video_url = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id={$video_id}&key={$api_key}";
+		$response = wp_remote_get( $video_url, array( 'timeout' => 15 ) );
+
+		if ( is_wp_error( $response ) ) {
+			throw new Exception( __( 'Failed to fetch video information.', 'youtube-channel-block' ) );
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( isset( $data['error'] ) ) {
+			$message = $data['error']['message'] ?? 'Unknown YouTube API error.';
+			throw new Exception( sprintf( __( 'YouTube API error: %s', 'youtube-channel-block' ), $message ) );
+		}
+
+		if ( ! isset( $data['items'][0]['snippet']['title'] ) ) {
+			throw new Exception( __( 'Video not found.', 'youtube-channel-block' ) );
+		}
+
+		$title = $data['items'][0]['snippet']['title'];
+		
+		// Cache the title for 24 hours
+		set_transient( $cache_key, $title, 24 * HOUR_IN_SECONDS );
+
+		return rest_ensure_response( array(
+			'success' => true,
+			'title' => $title,
+			'cached' => false,
+		) );
+
+	} catch ( Exception $e ) {
+		return new WP_Error( 'fetch_error', $e->getMessage(), array( 'status' => 500 ) );
+	}
+}
+
+/**
+ * Get any available API key from existing YouTube blocks
+ */
+function youtube_block_get_any_api_key() {
+	// Try to get from any post with a YouTube block
+	$posts = get_posts( array(
+		'post_type' => 'any',
+		'post_status' => 'publish',
+		'numberposts' => 10, // Limit to avoid performance issues
+		'meta_query' => array(
+			array(
+				'key' => '_youtube_block_api_key',
+				'compare' => 'EXISTS'
+			)
+		)
+	) );
+
+	foreach ( $posts as $post ) {
+		$api_key = get_post_meta( $post->ID, '_youtube_block_api_key', true );
+		if ( ! empty( $api_key ) ) {
+			return $api_key;
+		}
+	}
+
+	// Fallback: try to get from block content
+	$posts = get_posts( array(
+		'post_type' => 'any',
+		'post_status' => 'publish',
+		'numberposts' => 10,
+	) );
+
+	foreach ( $posts as $post ) {
+		$blocks = parse_blocks( $post->post_content );
+		$api_key = youtube_block_extract_api_key_from_blocks( $blocks );
+		if ( ! empty( $api_key ) ) {
+			return $api_key;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Extract API key from parsed blocks
+ */
+function youtube_block_extract_api_key_from_blocks( $blocks ) {
+	foreach ( $blocks as $block ) {
+		if ( $block['blockName'] === 'youtube-channel-block/youtube-channel-block' ) {
+			$attributes = $block['attrs'];
+			if ( ! empty( $attributes['apiKey'] ) ) {
+				return $attributes['apiKey'];
+			}
+		}
+		
+		// Recursively check inner blocks
+		if ( ! empty( $block['innerBlocks'] ) ) {
+			$api_key = youtube_block_extract_api_key_from_blocks( $block['innerBlocks'] );
+			if ( ! empty( $api_key ) ) {
+				return $api_key;
+			}
+		}
+	}
+	
+	return '';
+}
+
+/**
+ * Optimize YouTube embeds for better performance
+ */
+add_filter( 'embed_oembed_html', 'youtube_block_optimize_embeds', 10, 4 );
+
+function youtube_block_optimize_embeds( $html, $url, $attr, $post_id ) {
+	// Only optimize YouTube embeds
+	if ( strpos( $url, 'youtube.com' ) === false && strpos( $url, 'youtu.be' ) === false ) {
+		return $html;
+	}
+
+	// Add lazy loading and performance optimizations
+	$html = str_replace( 'src=', 'loading="lazy" src=', $html );
+	
+	// Add YouTube-specific optimizations
+	$html = str_replace( '?feature=oembed', '?feature=oembed&rel=0&modestbranding=1', $html );
+	
+	return $html;
 }
 
 /**

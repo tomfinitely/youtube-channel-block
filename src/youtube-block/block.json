@@ -23,7 +23,10 @@
 		"columns": { "type": "number", "default": 3 },
 		"carouselVisible": { "type": "number", "default": 1 },
 		"carouselAutoplay": { "type": "boolean", "default": true },
-		"carouselInterval": { "type": "number", "default": 3 }
+		"carouselInterval": { "type": "number", "default": 3 },
+		"showTitles": { "type": "boolean", "default": false },
+		"titlePosition": { "type": "string", "default": "above" },
+		"mediaPlayerSidebarVideos": { "type": "number", "default": 5 }
 	},
 	"supports": {
 		"html": false,

@@ -45,12 +45,22 @@
 				font-weight: 500;
 				font-size: 12px;
 			}
+
+			.cache-status {
+				background: #e8f5e8;
+				color: #2e7d32;
+				padding: 6px 12px;
+				border-radius: 4px;
+				font-weight: 500;
+				font-size: 12px;
+			}
 		}
 	}
 
-	.youtube-channel-block-inner-blocks {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	.youtube-channel-block-inner-blocks:not(.splide__list) {
+		// Default to vertical list layout
+		display: flex;
+		flex-direction: column;
 		gap: var(--wp--style--block-gap, 20px);
 
 		.wp-block-embed {
@@ -59,6 +69,9 @@
 			overflow: hidden;
 			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 			transition: box-shadow 0.3s ease;
+			// Performance optimization
+			will-change: box-shadow;
+			transform: translateZ(0); // Force hardware acceleration
 
 			&:hover {
 				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
@@ -82,9 +95,19 @@
 		}
 	}
 
+	// List layout (default) - already set above as flex column
+	&.is-layout-list {
+		.youtube-channel-block-inner-blocks {
+			display: flex;
+			flex-direction: column;
+			gap: var(--wp--style--block-gap, 20px);
+		}
+	}
+	
 	&.is-layout-grid {
 		.youtube-channel-block-inner-blocks {
 			display: grid;
+			flex-direction: unset; // Override the default flex
 			gap: var(--wp--style--block-gap, 1rem);
 			&.has-columns-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
 			&.has-columns-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -142,7 +165,16 @@
 	// Responsive adjustments
 	@media (max-width: 768px) {
 		.youtube-channel-block-inner-blocks {
-			grid-template-columns: 1fr;
+			// For list layout, keep flex column
+			// For grid layout, override to single column
+			&.has-columns-1,
+			&.has-columns-2,
+			&.has-columns-3,
+			&.has-columns-4,
+			&.has-columns-5,
+			&.has-columns-6 {
+				grid-template-columns: 1fr;
+			}
 			gap: var(--wp--style--block-gap, 15px);
 		}
 
@@ -167,6 +199,75 @@
 				.auto-update-badge {
 					padding: 4px 8px;
 					font-size: 11px;
+				}
+			}
+		}
+	}
+
+	// Title display styles for list layout
+	&.has-titles {
+		.youtube-video-title {
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+			color: inherit;
+			line-height: 1.4;
+			
+			&.title-position-above {
+				margin-bottom: 0.75rem;
+				font-size: 1.1rem;
+			}
+		}
+
+		.youtube-video-with-title {
+			display: flex;
+			align-items: flex-start;
+			gap: 1rem;
+			margin-bottom: 1.5rem;
+
+			&.youtube-video-left-title {
+				.youtube-video-title {
+					flex: 0 0 200px;
+					margin-bottom: 0;
+					font-size: 1rem;
+					padding-right: 1rem;
+				}
+
+				.wp-block-embed {
+					flex: 1;
+				}
+			}
+
+			&.youtube-video-right-title {
+				.wp-block-embed {
+					flex: 1;
+				}
+
+				.youtube-video-title {
+					flex: 0 0 200px;
+					margin-bottom: 0;
+					font-size: 1rem;
+					padding-left: 1rem;
+				}
+			}
+		}
+
+		// Responsive adjustments
+		@media (max-width: 768px) {
+			.youtube-video-with-title {
+				flex-direction: column;
+				gap: 0.5rem;
+
+				&.youtube-video-left-title,
+				&.youtube-video-right-title {
+					.youtube-video-title {
+						flex: none;
+						padding: 0;
+						margin-bottom: 0.5rem;
+					}
+
+					.wp-block-embed {
+						flex: none;
+					}
 				}
 			}
 		}

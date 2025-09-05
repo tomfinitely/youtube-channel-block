@@ -28,6 +28,57 @@ console.log("hello from the frontend.")
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
+  // Handle YouTube blocks with titles
+  const youtubeBlocks = document.querySelectorAll('.wp-block-youtube-channel-block');
+  
+  youtubeBlocks.forEach(block => {
+    const showTitles = block.dataset.showTitles === 'true';
+    const titlePosition = block.dataset.titlePosition || 'above';
+    
+    if (showTitles && titlePosition) {
+      // Find all embed blocks within this YouTube block
+      const embedBlocks = block.querySelectorAll('.wp-block-embed');
+      
+      embedBlocks.forEach((embed, index) => {
+        // Get the video URL from the embed
+        const iframe = embed.querySelector('iframe');
+        if (iframe) {
+          const src = iframe.src;
+          const videoId = extractVideoIdFromEmbed(src);
+          
+          if (videoId) {
+            // Create title element
+            const titleElement = document.createElement('div');
+            titleElement.className = `youtube-video-title title-position-${titlePosition}`;
+            titleElement.setAttribute('data-video-id', videoId);
+            
+            // Fetch and display title
+            fetchVideoTitle(videoId, titleElement);
+            
+            // Position the title based on the setting
+            if (titlePosition === 'above') {
+              embed.parentNode.insertBefore(titleElement, embed);
+            } else if (titlePosition === 'left') {
+              // Create a wrapper for left/right positioning
+              const wrapper = document.createElement('div');
+              wrapper.className = 'youtube-video-with-title youtube-video-left-title';
+              embed.parentNode.insertBefore(wrapper, embed);
+              wrapper.appendChild(titleElement);
+              wrapper.appendChild(embed);
+            } else if (titlePosition === 'right') {
+              // Create a wrapper for right positioning
+              const wrapper = document.createElement('div');
+              wrapper.className = 'youtube-video-with-title youtube-video-right-title';
+              embed.parentNode.insertBefore(wrapper, embed);
+              wrapper.appendChild(embed);
+              wrapper.appendChild(titleElement);
+            }
+          }
+        }
+      });
+    }
+  });
+
   // Splide
   const splides = document.querySelectorAll('.splide')
 
@@ -72,6 +123,32 @@ document.addEventListener( 'DOMContentLoaded', () => {
     })
   }
 })
+
+// Helper function to extract video ID from embed URL
+function extractVideoIdFromEmbed(src) {
+  const match = src.match(/\/embed\/([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : null;
+}
+
+// Helper function to fetch video title
+async function fetchVideoTitle(videoId, titleElement) {
+  try {
+    // First try to get from WordPress REST API if available
+    const response = await fetch(`/wp-json/youtube-channel-block/v1/video-title/${videoId}`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.title) {
+        titleElement.textContent = data.title;
+        return;
+      }
+    }
+  } catch (error) {
+    console.log('Could not fetch title from WordPress API, trying alternative method');
+  }
+  
+  // Fallback: try to extract from page title or use a placeholder
+  titleElement.textContent = `Video ${videoId}`;
+}
 
 
 /* eslint-enable no-console */
