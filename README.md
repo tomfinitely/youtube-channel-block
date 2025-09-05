@@ -9,7 +9,6 @@ A WordPress block that fetches and displays YouTube videos from channels or play
 - **Automatic Updates**: Cron jobs automatically refresh video content based on your chosen frequency
 - **Flexible Configuration**: Support for both channel URLs and playlist URLs
 - **Responsive Design**: Videos display in a responsive grid layout
-- **Sort Options**: Multiple sorting options (date, title, view count, etc.)
 - **Customizable Quantity**: Choose how many videos to display (1-50)
 
 ## Setup
