@@ -44,7 +44,7 @@ A WordPress block that fetches and displays YouTube videos from channels or play
 3. **Playlist URL** (optional): Enter a YouTube playlist URL like:
    - `https://www.youtube.com/playlist?list=PL...`
 4. **Number of videos**: Choose how many videos to display (1-50)
-5. **Sort order**: Choose how to sort the videos
+5. **Sort order**: Choose how to sort the videos via drag-and-drop
 6. **Auto-update**: Enable automatic updates via cron jobs
 7. **Update frequency**: Choose how often to update (hourly, daily, weekly)
 
