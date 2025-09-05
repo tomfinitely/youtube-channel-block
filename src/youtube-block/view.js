@@ -28,54 +28,21 @@ console.log("hello from the frontend.")
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
-  // Handle YouTube blocks with titles
+  // Handle YouTube blocks with titles and media player layout
   const youtubeBlocks = document.querySelectorAll('.wp-block-youtube-channel-block');
   
   youtubeBlocks.forEach(block => {
     const showTitles = block.dataset.showTitles === 'true';
     const titlePosition = block.dataset.titlePosition || 'above';
+    const isMediaPlayer = block.classList.contains('is-layout-media-player');
+    const sidebarVideos = parseInt(block.dataset.mediaPlayerSidebarVideos) || 5;
     
-    if (showTitles && titlePosition) {
-      // Find all embed blocks within this YouTube block
-      const embedBlocks = block.querySelectorAll('.wp-block-embed');
-      
-      embedBlocks.forEach((embed, index) => {
-        // Get the video URL from the embed
-        const iframe = embed.querySelector('iframe');
-        if (iframe) {
-          const src = iframe.src;
-          const videoId = extractVideoIdFromEmbed(src);
-          
-          if (videoId) {
-            // Create title element
-            const titleElement = document.createElement('div');
-            titleElement.className = `youtube-video-title title-position-${titlePosition}`;
-            titleElement.setAttribute('data-video-id', videoId);
-            
-            // Fetch and display title
-            fetchVideoTitle(videoId, titleElement);
-            
-            // Position the title based on the setting
-            if (titlePosition === 'above') {
-              embed.parentNode.insertBefore(titleElement, embed);
-            } else if (titlePosition === 'left') {
-              // Create a wrapper for left/right positioning
-              const wrapper = document.createElement('div');
-              wrapper.className = 'youtube-video-with-title youtube-video-left-title';
-              embed.parentNode.insertBefore(wrapper, embed);
-              wrapper.appendChild(titleElement);
-              wrapper.appendChild(embed);
-            } else if (titlePosition === 'right') {
-              // Create a wrapper for right positioning
-              const wrapper = document.createElement('div');
-              wrapper.className = 'youtube-video-with-title youtube-video-right-title';
-              embed.parentNode.insertBefore(wrapper, embed);
-              wrapper.appendChild(embed);
-              wrapper.appendChild(titleElement);
-            }
-          }
-        }
-      });
+    if (isMediaPlayer) {
+      // Handle Media Player layout
+      initializeMediaPlayer(block, showTitles, sidebarVideos);
+    } else if (showTitles && titlePosition) {
+      // Handle regular title display for other layouts
+      handleTitleDisplay(block, showTitles, titlePosition);
     }
   });
 
@@ -128,6 +95,178 @@ document.addEventListener( 'DOMContentLoaded', () => {
 function extractVideoIdFromEmbed(src) {
   const match = src.match(/\/embed\/([a-zA-Z0-9_-]+)/);
   return match ? match[1] : null;
+}
+
+// Helper function to handle title display for regular layouts
+function handleTitleDisplay(block, showTitles, titlePosition) {
+  if (!showTitles || !titlePosition) return;
+  
+  // Find all embed blocks within this YouTube block
+  const embedBlocks = block.querySelectorAll('.wp-block-embed');
+  
+  embedBlocks.forEach((embed, index) => {
+    // Get the video URL from the embed
+    const iframe = embed.querySelector('iframe');
+    if (iframe) {
+      const src = iframe.src;
+      const videoId = extractVideoIdFromEmbed(src);
+      
+      if (videoId) {
+        // Create title element
+        const titleElement = document.createElement('div');
+        titleElement.className = `youtube-video-title title-position-${titlePosition}`;
+        titleElement.setAttribute('data-video-id', videoId);
+        
+        // Fetch and display title
+        fetchVideoTitle(videoId, titleElement);
+        
+        // Position the title based on the setting
+        if (titlePosition === 'above') {
+          embed.parentNode.insertBefore(titleElement, embed);
+        } else if (titlePosition === 'left') {
+          // Create a wrapper for left/right positioning
+          const wrapper = document.createElement('div');
+          wrapper.className = 'youtube-video-with-title youtube-video-left-title';
+          embed.parentNode.insertBefore(wrapper, embed);
+          wrapper.appendChild(titleElement);
+          wrapper.appendChild(embed);
+        } else if (titlePosition === 'right') {
+          // Create a wrapper for right positioning
+          const wrapper = document.createElement('div');
+          wrapper.className = 'youtube-video-with-title youtube-video-right-title';
+          embed.parentNode.insertBefore(wrapper, embed);
+          wrapper.appendChild(embed);
+          wrapper.appendChild(titleElement);
+        }
+      }
+    }
+  });
+}
+
+// Helper function to initialize Media Player layout
+function initializeMediaPlayer(block, showTitles, sidebarVideos) {
+  const embedBlocks = block.querySelectorAll('.wp-block-embed');
+  
+  if (embedBlocks.length === 0) return;
+  
+  // Create Media Player structure
+  const mediaPlayerContainer = document.createElement('div');
+  mediaPlayerContainer.className = 'youtube-media-player';
+  
+  // Main video area (first video)
+  const mainVideoArea = document.createElement('div');
+  mainVideoArea.className = 'youtube-main-video';
+  
+  // Sidebar area
+  const sidebarArea = document.createElement('div');
+  sidebarArea.className = 'youtube-sidebar';
+  
+  // Get the first video (main video)
+  const mainVideo = embedBlocks[0];
+  const mainVideoId = extractVideoIdFromEmbed(mainVideo.querySelector('iframe')?.src);
+  
+  // Create main video container
+  const mainVideoContainer = document.createElement('div');
+  mainVideoContainer.className = 'youtube-main-video-container';
+  
+  if (showTitles && mainVideoId) {
+    const mainTitle = document.createElement('h3');
+    mainTitle.className = 'youtube-main-video-title';
+    mainTitle.setAttribute('data-video-id', mainVideoId);
+    fetchVideoTitle(mainVideoId, mainTitle);
+    mainVideoContainer.appendChild(mainTitle);
+  }
+  
+  mainVideoContainer.appendChild(mainVideo.cloneNode(true));
+  mainVideoArea.appendChild(mainVideoContainer);
+  
+  // Create sidebar videos (remaining videos)
+  const remainingVideos = Array.from(embedBlocks).slice(1, sidebarVideos + 1);
+  
+  remainingVideos.forEach((embed, index) => {
+    const iframe = embed.querySelector('iframe');
+    if (iframe) {
+      const videoId = extractVideoIdFromEmbed(iframe.src);
+      
+      const sidebarItem = document.createElement('div');
+      sidebarItem.className = 'youtube-sidebar-item';
+      sidebarItem.setAttribute('data-video-id', videoId);
+      
+      // Create thumbnail (we'll use the embed's iframe as thumbnail for now)
+      const thumbnail = document.createElement('div');
+      thumbnail.className = 'youtube-sidebar-thumbnail';
+      
+      // Create a smaller iframe for thumbnail
+      const thumbnailIframe = iframe.cloneNode(true);
+      thumbnailIframe.style.width = '100%';
+      thumbnailIframe.style.height = '100px';
+      thumbnail.appendChild(thumbnailIframe);
+      
+      sidebarItem.appendChild(thumbnail);
+      
+      if (showTitles && videoId) {
+        const title = document.createElement('div');
+        title.className = 'youtube-sidebar-title';
+        title.setAttribute('data-video-id', videoId);
+        fetchVideoTitle(videoId, title);
+        sidebarItem.appendChild(title);
+      }
+      
+      // Add click handler to switch videos
+      sidebarItem.addEventListener('click', () => {
+        switchToVideo(block, videoId, embed, showTitles);
+      });
+      
+      sidebarArea.appendChild(sidebarItem);
+    }
+  });
+  
+  // Assemble the media player
+  mediaPlayerContainer.appendChild(mainVideoArea);
+  mediaPlayerContainer.appendChild(sidebarArea);
+  
+  // Replace the original inner blocks with the media player
+  const innerBlocks = block.querySelector('.youtube-channel-block-inner-blocks');
+  if (innerBlocks) {
+    innerBlocks.innerHTML = '';
+    innerBlocks.appendChild(mediaPlayerContainer);
+  }
+}
+
+// Helper function to switch videos in Media Player
+function switchToVideo(block, videoId, newEmbed, showTitles) {
+  const mainVideoContainer = block.querySelector('.youtube-main-video-container');
+  if (!mainVideoContainer) return;
+  
+  // Update main video
+  const mainEmbed = mainVideoContainer.querySelector('.wp-block-embed');
+  if (mainEmbed) {
+    const newIframe = newEmbed.querySelector('iframe');
+    if (newIframe) {
+      const mainIframe = mainEmbed.querySelector('iframe');
+      if (mainIframe) {
+        mainIframe.src = newIframe.src;
+      }
+    }
+  }
+  
+  // Update main video title
+  if (showTitles) {
+    const mainTitle = mainVideoContainer.querySelector('.youtube-main-video-title');
+    if (mainTitle) {
+      mainTitle.setAttribute('data-video-id', videoId);
+      fetchVideoTitle(videoId, mainTitle);
+    }
+  }
+  
+  // Update active state in sidebar
+  const sidebarItems = block.querySelectorAll('.youtube-sidebar-item');
+  sidebarItems.forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('data-video-id') === videoId) {
+      item.classList.add('active');
+    }
+  });
 }
 
 // Helper function to fetch video title

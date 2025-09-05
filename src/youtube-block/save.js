@@ -26,11 +26,13 @@ export default function save({ attributes }) {
 			layout === 'list' ? 'is-layout-list' : '',
 			layout === 'grid' ? 'is-layout-grid' : '',
 			layout === 'carousel' ? 'is-layout-carousel' : '',
+			layout === 'media-player' ? 'is-layout-media-player' : '',
 			showTitles ? 'has-titles' : '',
 			showTitles ? `title-position-${titlePosition}` : ''
 		].filter(Boolean).join(' '),
 		'data-show-titles': String(showTitles),
 		'data-title-position': titlePosition,
+		'data-media-player-sidebar-videos': layout === 'media-player' ? String(mediaPlayerSidebarVideos) : undefined,
 	});
 
 	// For carousel layout, inject Splide classes into inner blocks

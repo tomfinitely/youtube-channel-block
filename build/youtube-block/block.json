@@ -68,6 +68,18 @@
     "carouselInterval": {
       "type": "number",
       "default": 3
+    },
+    "showTitles": {
+      "type": "boolean",
+      "default": false
+    },
+    "titlePosition": {
+      "type": "string",
+      "default": "above"
+    },
+    "mediaPlayerSidebarVideos": {
+      "type": "number",
+      "default": 5
     }
   },
   "supports": {

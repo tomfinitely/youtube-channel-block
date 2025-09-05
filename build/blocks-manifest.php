@@ -73,6 +73,18 @@ return array(
 			'carouselInterval' => array(
 				'type' => 'number',
 				'default' => 3
+			),
+			'showTitles' => array(
+				'type' => 'boolean',
+				'default' => false
+			),
+			'titlePosition' => array(
+				'type' => 'string',
+				'default' => 'above'
+			),
+			'mediaPlayerSidebarVideos' => array(
+				'type' => 'number',
+				'default' => 5
 			)
 		),
 		'supports' => array(
