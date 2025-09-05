@@ -435,7 +435,7 @@
 						position: static;
 						
 						.wp-block-embed iframe {
-							height: 300px;
+							height: 100%;
 						}
 					}
 				}
@@ -456,6 +456,59 @@
 			}
 		}
 
+		// Mobile horizontal scroll for sidebar videos
+		@media (max-width: 800px) {
+			.youtube-media-player {
+				.youtube-sidebar {
+					display: flex;
+					flex-direction: row;
+					overflow-x: auto;
+					overflow-y: hidden;
+					max-height: none;
+					padding: 0 1rem 1rem 1rem;
+					gap: 1rem;
+					
+					// Touch-friendly scrolling
+					-webkit-overflow-scrolling: touch;
+					scroll-behavior: smooth;
+					
+					// Hide scrollbar but keep functionality
+					scrollbar-width: none;
+					-ms-overflow-style: none;
+					
+					&::-webkit-scrollbar {
+						display: none;
+					}
+
+					.youtube-sidebar-item {
+						flex: 0 0 280px; // Fixed width for consistent cards
+						margin-bottom: 0;
+						display: flex;
+						flex-direction: column;
+						gap: 0.5rem;
+						padding: 1rem;
+						min-height: 200px;
+						
+						.youtube-sidebar-thumbnail {
+							flex: none;
+							width: 100%;
+							height: 120px;
+							order: 1;
+						}
+						
+						.youtube-sidebar-title {
+							order: 2;
+							font-size: 0.875rem;
+							line-height: 1.3;
+							-webkit-line-clamp: 3;
+							line-clamp: 3;
+							margin: 0;
+						}
+					}
+				}
+			}
+		}
+
 		@media (max-width: 768px) {
 			.youtube-media-player {
 				.youtube-main-video {
@@ -465,20 +518,22 @@
 						}
 						
 						.wp-block-embed iframe {
-							height: 250px;
+							height: 100%;
 						}
 					}
 				}
 
+				// Adjust horizontal scroll for smaller screens
 				.youtube-sidebar {
+					padding: 0 0.5rem 1rem 0.5rem;
+					
 					.youtube-sidebar-item {
-						flex-direction: column;
-						gap: 0.5rem;
+						flex: 0 0 240px; // Slightly smaller cards for phones
+						min-height: 180px;
+						padding: 0.75rem;
 						
 						.youtube-sidebar-thumbnail {
-							flex: none;
-							width: 100%;
-							height: 120px;
+							height: 100px;
 						}
 						
 						.youtube-sidebar-title {
