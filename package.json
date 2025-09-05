@@ -1,7 +1,7 @@
 {
 	"name": "youtube-channel-block",
-	"version": "0.1.0",
-	"description": "A WordPress block that fetches and displays YouTube videos from channels or playlists using the YouTube Data API with automatic updates via cron jobs.",
+	"version": "0.2.0",
+	"description": "A powerful WordPress block that fetches and displays YouTube videos with multiple layouts (List, Grid, Carousel, Media Player), smart sorting, comprehensive URL support including @handles, and automatic updates via cron jobs.",
 	"author": "Tom Finley",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",

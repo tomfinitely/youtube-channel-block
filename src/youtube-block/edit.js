@@ -157,9 +157,22 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 		} catch (err) {
 			console.error('YouTube Block Error:', err);
+			let errorMessage = err.message;
+			
+			// Provide more helpful error messages for common issues
+			if (err.message.includes('Could not resolve channel URL')) {
+				errorMessage = 'Could not find the YouTube channel. Please check that the URL is correct and the channel exists. Try using a direct channel URL (youtube.com/channel/UC...) if the @handle URL doesn\'t work.';
+			} else if (err.message.includes('Channel not found')) {
+				errorMessage = 'Channel not found or has no uploaded videos. Please verify the channel URL and ensure it has public videos.';
+			} else if (err.message.includes('YouTube API error')) {
+				errorMessage = `${err.message} Please check your API key and ensure it has YouTube Data API v3 access enabled.`;
+			} else {
+				errorMessage = `${err.message} Please check your API key and URLs, and ensure the plugin is properly activated.`;
+			}
+			
 			setAttributes({
 				isLoading: false,
-				error: `Error: ${err.message}. Please check your API key and URLs, and ensure the plugin is properly activated.`,
+				error: errorMessage,
 			});
 		}
 	};
@@ -348,9 +361,22 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 		} catch (err) {
 			console.error('YouTube Block Error:', err);
+			let errorMessage = err.message;
+			
+			// Provide more helpful error messages for common issues
+			if (err.message.includes('Could not resolve channel URL')) {
+				errorMessage = 'Could not find the YouTube channel. Please check that the URL is correct and the channel exists. Try using a direct channel URL (youtube.com/channel/UC...) if the @handle URL doesn\'t work.';
+			} else if (err.message.includes('Channel not found')) {
+				errorMessage = 'Channel not found or has no uploaded videos. Please verify the channel URL and ensure it has public videos.';
+			} else if (err.message.includes('YouTube API error')) {
+				errorMessage = `${err.message} Please check your API key and ensure it has YouTube Data API v3 access enabled.`;
+			} else {
+				errorMessage = `${err.message} Please check your API key and URLs, and ensure the plugin is properly activated.`;
+			}
+			
 			setAttributes({
 				isLoading: false,
-				error: `Error: ${err.message}. Please check your API key and URLs, and ensure the plugin is properly activated.`,
+				error: errorMessage,
 			});
 		}
 	};

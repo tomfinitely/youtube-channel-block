@@ -7,15 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+- 🌍 Full internationalization support
+- 📊 Analytics integration
+- 🎨 Additional layout templates
+- 🔗 Deep linking for carousel and media player
+
+## [0.2.0] - 2025-01-05
+
 ### Added
-- Internationalization support preparation
-- Additional layout options in development
+- 🎬 **Media Player Layout**: New layout with featured video and clickable sidebar thumbnails
+- 🎠 **Enhanced Carousel Layout**: Improved Splide.js integration with grid display in editor
+- 🔄 **Functional Sort Orders**: Client-side sorting by date (newest/oldest) and title (A-Z/Z-A)
+- 🔧 **Advanced URL Support**: Complete support for all YouTube channel formats including @handles
+- 💾 **Smart Caching System**: Multi-layered caching for API responses, channel resolution, and video titles
+- 🎨 **Grid Editor Display**: Carousel and Media Player layouts now show as grid in backend for easier editing
+- ⚡ **Auto-Title Management**: Media Player layout automatically enables and positions titles
+- 🚀 **Enhanced Error Messages**: Contextual error messages with troubleshooting guidance
+- 📱 **Mobile Optimizations**: Horizontal scroll for media player on mobile, touch-friendly controls
 
 ### Changed
-- Performance optimizations for API calls
+- 🔍 **YouTube URL Resolution**: Complete rewrite with proper API resolution for @handles, /c/, /user/ formats
+- 🎯 **Layout Management**: Improved layout-specific controls and settings organization  
+- 💪 **API Integration**: Enhanced error handling and API quota management
+- 🎨 **CSS Architecture**: Comprehensive responsive design with hardware acceleration
+- 🔄 **Sorting Implementation**: Moved from API-based to efficient client-side sorting
+- 📋 **Editor Experience**: Better visual feedback and layout-specific controls
 
 ### Fixed
-- Minor CSS compatibility issues
+- ✅ **Channel URL Issues**: Now properly handles `https://www.youtube.com/@WordPress/videos` and similar URLs
+- ✅ **Sort Order Functionality**: Sorting now works correctly for all supported orders
+- ✅ **Media Player Titles**: Titles always visible and positioned correctly in media player layout
+- ✅ **Backend Grid Display**: Carousel and media player layouts display as grid in editor
+- ✅ **URL Pattern Matching**: Enhanced regex patterns support all URL variations with suffixes
+- ✅ **Cache Management**: Proper cache invalidation and management
+- ✅ **Error Recovery**: Better fallback mechanisms and user guidance
+- ✅ **Cron Job Implementation**: Fixed non-functional cron jobs with proper post meta saving and content updates
+
+### Technical Improvements
+- 🚀 **YouTube API Resolution**: Implemented proper `forHandle` and `forUsername` API endpoint usage
+- 📋 **Editor Architecture**: Enhanced InnerBlocks configuration for layout-specific display
+- 🎯 **State Management**: Improved useEffect hooks for automatic title enabling and layout changes
+- 💾 **Caching Strategy**: Multi-tiered caching with appropriate TTL values (1h API, 24h resolution)
+- 🎨 **CSS Grid Systems**: Advanced grid layouts with responsive breakpoints and column management
+- ⚡ **Performance**: Hardware-accelerated animations and lazy loading optimizations
+- 🔍 **Regex Optimization**: Comprehensive URL pattern matching with optional suffix support
+- 🎠 **Carousel Integration**: Proper Splide.js setup with responsive configurations
+- 📡 **API Error Handling**: Structured error responses with actionable user feedback
+- 📱 **Mobile-First Design**: Touch-optimized interfaces and horizontal scroll implementations
+- 🕰️ **Cron Job System**: Complete implementation with post meta tracking, content updates, and admin interface
+- 🗺️ **Admin Tools**: Added cron status dashboard and manual testing interface
 
 ## [0.1.0] - 2025-09-03
 
