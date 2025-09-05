@@ -1,1 +1,1124 @@
-(()=>{"use strict";var e,l={14:(e,l,o)=>{const a=window.wp.blocks,n=window.wp.i18n,t=window.wp.blockEditor,s=window.wp.apiFetch;var c=o.n(s);const r=window.wp.data,u=window.wp.components,i=window.wp.element,d=window.ReactJSXRuntime,h=JSON.parse('{"UU":"youtube-channel-block/youtube-channel-block"}');(0,a.registerBlockType)(h.UU,{edit:function({attributes:e,setAttributes:l,clientId:o}){const{channelUrl:s,playlistUrl:h,apiKey:b,maxResults:y,order:p,isLoading:_,error:k,lastUpdated:v,autoUpdate:m,updateFrequency:g,layout:x,columns:f,carouselVisible:C,carouselAutoplay:w,carouselInterval:j,showTitles:U,titlePosition:T,mediaPlayerSidebarVideos:P,align:S}=e,[L,R]=(0,i.useState)(s||h),[N,I]=(0,i.useState)(b),B=e=>e?e.includes("playlist?list=")||e.includes("/playlist/")?{channelUrl:"",playlistUrl:e}:(e.includes("youtube.com/@")||e.includes("youtube.com/c/")||e.includes("youtube.com/channel/")||e.includes("youtube.com/user/"),{channelUrl:e,playlistUrl:""}):{channelUrl:"",playlistUrl:""},A=e=>{R(e),e&&N&&setTimeout(()=>{(async e=>{if(!N||!e)return;const{channelUrl:t,playlistUrl:s}=B(e);l({isLoading:!0,error:""});try{const e=await c()({path:"/youtube-channel-block/v1/fetch-videos",method:"POST",data:{channel_url:t,playlist_url:s,api_key:N,max_results:y,order:p,force_refresh:!1}}),r=e.videos.map(e=>(0,a.createBlock)("core/embed",{url:e.video_url,providerNameSlug:"youtube",responsive:!0}));O(o,r),l({isLoading:!1,error:"",lastUpdated:(new Date).toISOString(),channelUrl:t,playlistUrl:s,apiKey:N}),F(""),e.cached&&(F((0,n.__)('Data loaded from cache. Use "Clear Cache" to force fresh data.',"youtube-channel-block")),setTimeout(()=>F(""),5e3))}catch(e){console.error("YouTube Block Error:",e);let o=e.message;o=e.message.includes("Could not resolve channel URL")?"Could not find the YouTube channel. Please check that the URL is correct and the channel exists. Try using a direct channel URL (youtube.com/channel/UC...) if the @handle URL doesn't work.":e.message.includes("Channel not found")?"Channel not found or has no uploaded videos. Please verify the channel URL and ensure it has public videos.":e.message.includes("YouTube API error")?`${e.message} Please check your API key and ensure it has YouTube Data API v3 access enabled.`:`${e.message} Please check your API key and URLs, and ensure the plugin is properly activated.`,l({isLoading:!1,error:o})}})(e)},100)},{replaceInnerBlocks:O}=(0,r.useDispatch)("core/block-editor"),[Y,V]=(0,i.useState)(L),[D,F]=(0,i.useState)("");(0,i.useEffect)(()=>{if(Y!==L&&L){O(o,[]);const{channelUrl:e,playlistUrl:a}=B(L);l({error:"",lastUpdated:"",channelUrl:e,playlistUrl:a}),F((0,n.__)('Source changed - videos cleared. Click "Refresh Videos" to fetch new content.',"youtube-channel-block")),setTimeout(()=>F(""),5e3)}V(L)},[L,o,O,l,Y]),(0,i.useEffect)(()=>{"media-player"!==x||U||l({showTitles:!0})},[x,U,l]);const $=(0,t.useBlockProps)({className:["wp-block-youtube-channel-block",S?`align${S}`:"","list"===x?"is-layout-list":"","grid"===x?"is-layout-grid":"","carousel"===x?"is-layout-carousel":"","media-player"===x?"is-layout-media-player":"",U?"has-titles":"",U?`title-position-${T}`:""].filter(Boolean).join(" "),"data-carousel-visible":"carousel"===x?String(C):void 0,"data-carousel-autoplay":"carousel"===x?String(w):void 0,"data-carousel-interval":"carousel"===x?String(j):void 0,"data-show-titles":String(U),"data-title-position":T});let E;E="carousel"===x?(0,t.useInnerBlocksProps)({className:"youtube-channel-block-inner-blocks splide__list has-columns-3"},{templateLock:!1,allowedBlocks:["core/embed","core/paragraph","core/heading"]}):"media-player"===x?(0,t.useInnerBlocksProps)({className:"youtube-channel-block-inner-blocks has-columns-3"},{templateLock:!1,allowedBlocks:["core/embed","core/paragraph","core/heading"]}):(0,t.useInnerBlocksProps)({className:["youtube-channel-block-inner-blocks","grid"===x?`has-columns-${f}`:""].filter(Boolean).join(" ")},{templateLock:!1,allowedBlocks:["core/embed","core/paragraph","core/heading"]});const q=[{label:(0,n.__)("Date (newest first)","youtube-channel-block"),value:"date"},{label:(0,n.__)("Date (oldest first)","youtube-channel-block"),value:"dateAsc"},{label:(0,n.__)("Title (A-Z)","youtube-channel-block"),value:"title"},{label:(0,n.__)("Title (Z-A)","youtube-channel-block"),value:"titleDesc"},{label:(0,n.__)("Video count","youtube-channel-block"),value:"videoCount"},{label:(0,n.__)("View count","youtube-channel-block"),value:"viewCount"}],G=[{label:(0,n.__)("List (vertical)","youtube-channel-block"),value:"list"},{label:(0,n.__)("Grid","youtube-channel-block"),value:"grid"},{label:(0,n.__)("Carousel","youtube-channel-block"),value:"carousel"},{label:(0,n.__)("Media Player","youtube-channel-block"),value:"media-player"}],K=[{label:(0,n.__)("Hourly","youtube-channel-block"),value:"hourly"},{label:(0,n.__)("Daily","youtube-channel-block"),value:"daily"},{label:(0,n.__)("Weekly","youtube-channel-block"),value:"weekly"}],J=[{label:(0,n.__)("Above video","youtube-channel-block"),value:"above"},{label:(0,n.__)("Left of video","youtube-channel-block"),value:"left"},{label:(0,n.__)("Right of video","youtube-channel-block"),value:"right"}],M=async()=>{if(!N)return void l({error:(0,n.__)("YouTube API key is required.","youtube-channel-block")});if(!L)return void l({error:(0,n.__)("Please provide a YouTube channel or playlist URL.","youtube-channel-block")});const{channelUrl:e,playlistUrl:t}=B(L);l({isLoading:!0,error:""});try{const s=await c()({path:"/youtube-channel-block/v1/fetch-videos",method:"POST",data:{channel_url:e,playlist_url:t,api_key:N,max_results:y,order:p,force_refresh:!0}}),r=s.videos.map(e=>(0,a.createBlock)("core/embed",{url:e.video_url,providerNameSlug:"youtube",responsive:!0}));O(o,r),l({isLoading:!1,error:"",lastUpdated:(new Date).toISOString(),channelUrl:e,playlistUrl:t,apiKey:N}),F(""),s.cached&&(F((0,n.__)('Data loaded from cache. Use "Clear Cache" to force fresh data.',"youtube-channel-block")),setTimeout(()=>F(""),5e3))}catch(e){console.error("YouTube Block Error:",e);let o=e.message;o=e.message.includes("Could not resolve channel URL")?"Could not find the YouTube channel. Please check that the URL is correct and the channel exists. Try using a direct channel URL (youtube.com/channel/UC...) if the @handle URL doesn't work.":e.message.includes("Channel not found")?"Channel not found or has no uploaded videos. Please verify the channel URL and ensure it has public videos.":e.message.includes("YouTube API error")?`${e.message} Please check your API key and ensure it has YouTube Data API v3 access enabled.`:`${e.message} Please check your API key and URLs, and ensure the plugin is properly activated.`,l({isLoading:!1,error:o})}};return L?(0,d.jsxs)("div",{...$,children:[(0,d.jsxs)(t.InspectorControls,{children:[(0,d.jsxs)(u.PanelBody,{title:(0,n.__)("YouTube Settings","youtube-channel-block"),children:[(0,d.jsx)(u.TextControl,{label:(0,n.__)("YouTube API Key","youtube-channel-block"),value:N,onChange:I,help:(0,n.__)("Get your API key from Google Cloud Console","youtube-channel-block")}),(0,d.jsx)(u.TextControl,{label:(0,n.__)("Source URL","youtube-channel-block"),value:L,onChange:A,placeholder:"https://www.youtube.com/@channelname or https://www.youtube.com/playlist?list=...",help:(0,n.__)("Enter a YouTube channel URL or playlist URL","youtube-channel-block")}),(0,d.jsx)(u.RangeControl,{label:(0,n.__)("Number of videos","youtube-channel-block"),value:y,onChange:e=>l({maxResults:e}),min:1,max:50}),(0,d.jsx)(u.SelectControl,{label:(0,n.__)("Sort order","youtube-channel-block"),value:p,options:q,onChange:e=>l({order:e})})]}),(0,d.jsxs)(u.PanelBody,{title:(0,n.__)("Layout","youtube-channel-block"),initialOpen:!1,children:[(0,d.jsx)(u.SelectControl,{label:(0,n.__)("Layout Type","youtube-channel-block"),value:x,options:G,onChange:e=>l({layout:e})}),"grid"===x&&(0,d.jsx)(u.RangeControl,{label:(0,n.__)("Columns","youtube-channel-block"),value:f,onChange:e=>l({columns:e}),min:1,max:6}),"carousel"===x&&(0,d.jsxs)(d.Fragment,{children:[(0,d.jsx)(u.RangeControl,{label:(0,n.__)("Visible videos","youtube-channel-block"),value:C,onChange:e=>l({carouselVisible:e}),min:1,max:6}),(0,d.jsx)(u.ToggleControl,{label:(0,n.__)("Autoplay","youtube-channel-block"),checked:w,onChange:e=>l({carouselAutoplay:e})}),(0,d.jsx)(u.RangeControl,{label:(0,n.__)("Interval (seconds)","youtube-channel-block"),value:j,onChange:e=>l({carouselInterval:e}),min:1,max:12})]}),"list"===x&&(0,d.jsxs)(d.Fragment,{children:[(0,d.jsx)(u.ToggleControl,{label:(0,n.__)("Show video titles","youtube-channel-block"),checked:U,onChange:e=>l({showTitles:e})}),U&&(0,d.jsx)(u.SelectControl,{label:(0,n.__)("Title position","youtube-channel-block"),value:T,options:J,onChange:e=>l({titlePosition:e})})]}),"media-player"===x&&(0,d.jsxs)(d.Fragment,{children:[(0,d.jsx)(u.RangeControl,{label:(0,n.__)("Sidebar videos","youtube-channel-block"),value:P,onChange:e=>l({mediaPlayerSidebarVideos:e}),min:3,max:10,help:(0,n.__)("Number of videos to show in the sidebar","youtube-channel-block")}),(0,d.jsxs)("div",{className:"components-base-control",children:[(0,d.jsx)("div",{className:"components-base-control__label",children:(0,n.__)("Video titles","youtube-channel-block")}),(0,d.jsx)("div",{className:"components-base-control__help",children:(0,n.__)("Titles are always visible in media player layout and positioned to the right of thumbnails.","youtube-channel-block")})]})]})]}),(0,d.jsxs)(u.PanelBody,{title:(0,n.__)("Auto Update","youtube-channel-block"),initialOpen:!1,children:[(0,d.jsx)(u.ToggleControl,{label:(0,n.__)("Auto-update videos","youtube-channel-block"),checked:m,onChange:e=>l({autoUpdate:e})}),m&&(0,d.jsx)(u.SelectControl,{label:(0,n.__)("Update frequency","youtube-channel-block"),value:g,options:K,onChange:e=>l({updateFrequency:e})})]})]}),(0,d.jsxs)("div",{className:"youtube-channel-block-container",children:[(0,d.jsxs)("div",{className:"youtube-channel-block-header",children:[(0,d.jsxs)("div",{children:[(0,d.jsx)("h3",{children:(0,n.__)("YouTube Videos","youtube-channel-block")}),(0,d.jsxs)("div",{className:"youtube-channel-block-meta",children:[v&&(0,d.jsxs)("span",{className:"last-updated",children:[(0,n.__)("Last updated:","youtube-channel-block")," ",new Date(v).toLocaleString()]}),D&&D.includes("cache")&&(0,d.jsx)("span",{className:"cache-status",children:(0,n.__)("📦 Cached","youtube-channel-block")}),m&&(0,d.jsxs)("span",{className:"auto-update-badge",children:[(0,n.__)("Auto-update:","youtube-channel-block")," ",g]})]})]}),(0,d.jsxs)("div",{className:"youtube-channel-block-actions",children:[(0,d.jsx)(u.Button,{variant:"primary",onClick:M,disabled:_||!N,children:_?(0,n.__)("Fetching...","youtube-channel-block"):(0,n.__)("Refresh Videos","youtube-channel-block")}),(0,d.jsx)(u.Button,{variant:"secondary",onClick:async()=>{O(o,[]),l({error:"",lastUpdated:""}),F("");try{await c()({path:"/youtube-channel-block/v1/clear-cache",method:"POST"})}catch(e){console.log("Cache clear failed:",e)}},children:(0,n.__)("Clear Videos","youtube-channel-block")}),(0,d.jsx)(u.Button,{variant:"tertiary",onClick:async()=>{try{await c()({path:"/youtube-channel-block/v1/clear-cache",method:"POST"}),l({error:""}),F((0,n.__)("Cache cleared successfully. Next fetch will get fresh data.","youtube-channel-block")),setTimeout(()=>F(""),3e3)}catch(e){l({error:`Cache clear failed: ${e.message}`})}},title:(0,n.__)("Clear cached data to force fresh API calls","youtube-channel-block"),children:(0,n.__)("Clear Cache","youtube-channel-block")})]})]}),k&&(0,d.jsx)(u.Notice,{status:"error",isDismissible:!1,children:k}),D&&(0,d.jsx)(u.Notice,{status:"info",isDismissible:!1,children:D}),_&&(0,d.jsxs)("div",{className:"youtube-channel-block-loading",children:[(0,d.jsx)(u.Spinner,{}),(0,d.jsx)("span",{children:(0,n.__)("Fetching videos...","youtube-channel-block")})]}),(0,d.jsx)("div",{...E})]})]}):(0,d.jsx)("div",{...$,children:(0,d.jsx)(u.Placeholder,{icon:"video-alt3",label:(0,n.__)("YouTube Videos Block","youtube-channel-block"),instructions:(0,n.__)("Enter a YouTube channel or playlist URL to fetch and display videos.","youtube-channel-block"),children:(0,d.jsxs)("div",{className:"youtube-channel-block-placeholder-controls",children:[(0,d.jsx)(u.TextControl,{label:(0,n.__)("YouTube API Key","youtube-channel-block"),value:N,onChange:I,help:(0,n.__)("Get your API key from Google Cloud Console","youtube-channel-block"),placeholder:"AIzaSy..."}),(0,d.jsx)(u.TextControl,{label:(0,n.__)("Source URL","youtube-channel-block"),value:L,onChange:A,placeholder:"https://www.youtube.com/@channelname or https://www.youtube.com/playlist?list=...",help:(0,n.__)("Enter a YouTube channel URL or playlist URL","youtube-channel-block")}),(0,d.jsx)(u.RangeControl,{label:(0,n.__)("Number of videos","youtube-channel-block"),value:y,onChange:e=>l({maxResults:e}),min:1,max:50}),(0,d.jsx)(u.SelectControl,{label:(0,n.__)("Sort order","youtube-channel-block"),value:p,options:q,onChange:e=>l({order:e})}),(0,d.jsx)(u.Button,{variant:"primary",onClick:M,disabled:_||!N,children:_?(0,n.__)("Fetching...","youtube-channel-block"):(0,n.__)("Fetch Videos","youtube-channel-block")})]})})})},save:function({attributes:e}){const{lastUpdated:l,autoUpdate:o,updateFrequency:a,layout:n,columns:s,carouselVisible:c,carouselAutoplay:r,carouselInterval:u,showTitles:i,titlePosition:h,mediaPlayerSidebarVideos:b,align:y}=e,p=t.useBlockProps.save({className:["wp-block-youtube-channel-block",y?`align${y}`:"","list"===n?"is-layout-list":"","grid"===n?"is-layout-grid":"","carousel"===n?"is-layout-carousel":"","media-player"===n?"is-layout-media-player":"",i?"has-titles":"",i?`title-position-${h}`:""].filter(Boolean).join(" "),"data-show-titles":String(i),"data-title-position":h,"data-media-player-sidebar-videos":"media-player"===n?String(b):void 0});if("carousel"===n){const e=t.useInnerBlocksProps.save({className:"youtube-channel-block-inner-blocks splide__list"});return(0,d.jsx)("div",{...p,children:(0,d.jsx)("div",{className:"splide","data-carousel-visible":c,"data-carousel-autoplay":r,"data-carousel-interval":u,children:(0,d.jsx)("div",{className:"splide__track",children:(0,d.jsx)("div",{...e})})})})}const _=t.useInnerBlocksProps.save({className:["youtube-channel-block-inner-blocks","grid"===n?`has-columns-${s}`:""].filter(Boolean).join(" ")});return(0,d.jsx)("div",{...p,children:(0,d.jsx)("div",{..._})})}})}},o={};function a(e){var n=o[e];if(void 0!==n)return n.exports;var t=o[e]={exports:{}};return l[e](t,t.exports,a),t.exports}a.m=l,e=[],a.O=(l,o,n,t)=>{if(!o){var s=1/0;for(i=0;i<e.length;i++){for(var[o,n,t]=e[i],c=!0,r=0;r<o.length;r++)(!1&t||s>=t)&&Object.keys(a.O).every(e=>a.O[e](o[r]))?o.splice(r--,1):(c=!1,t<s&&(s=t));if(c){e.splice(i--,1);var u=n();void 0!==u&&(l=u)}}return l}t=t||0;for(var i=e.length;i>0&&e[i-1][2]>t;i--)e[i]=e[i-1];e[i]=[o,n,t]},a.n=e=>{var l=e&&e.__esModule?()=>e.default:()=>e;return a.d(l,{a:l}),l},a.d=(e,l)=>{for(var o in l)a.o(l,o)&&!a.o(e,o)&&Object.defineProperty(e,o,{enumerable:!0,get:l[o]})},a.o=(e,l)=>Object.prototype.hasOwnProperty.call(e,l),(()=>{var e={827:0,947:0};a.O.j=l=>0===e[l];var l=(l,o)=>{var n,t,[s,c,r]=o,u=0;if(s.some(l=>0!==e[l])){for(n in c)a.o(c,n)&&(a.m[n]=c[n]);if(r)var i=r(a)}for(l&&l(o);u<s.length;u++)t=s[u],a.o(e,t)&&e[t]&&e[t][0](),e[t]=0;return a.O(i)},o=globalThis.webpackChunkyoutube_channel_block=globalThis.webpackChunkyoutube_channel_block||[];o.forEach(l.bind(null,0)),o.push=l.bind(null,o.push.bind(o))})();var n=a.O(void 0,[947],()=>a(14));n=a.O(n)})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/youtube-block/block.json":
+/*!**************************************!*\
+  !*** ./src/youtube-block/block.json ***!
+  \**************************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"youtube-channel-block/youtube-channel-block","version":"0.2.0","title":"YouTube Channel Block","category":"media","icon":"video-alt3","description":"A block that fetches and displays YouTube videos from channels or playlists using the YouTube Data API.","example":{},"attributes":{"channelUrl":{"type":"string","default":""},"playlistUrl":{"type":"string","default":""},"apiKey":{"type":"string","default":""},"maxResults":{"type":"number","default":10},"order":{"type":"string","default":"date"},"isLoading":{"type":"boolean","default":false},"error":{"type":"string","default":""},"lastUpdated":{"type":"string","default":""},"autoUpdate":{"type":"boolean","default":true},"updateFrequency":{"type":"string","default":"daily"},"layout":{"type":"string","default":"list"},"columns":{"type":"number","default":3},"carouselVisible":{"type":"number","default":1},"carouselAutoplay":{"type":"boolean","default":true},"carouselInterval":{"type":"number","default":3},"showTitles":{"type":"boolean","default":false},"titlePosition":{"type":"string","default":"above"},"mediaPlayerSidebarVideos":{"type":"number","default":5}},"supports":{"html":false,"innerBlocks":true,"className":false,"align":["wide","full"],"spacing":{"margin":true,"padding":true,"blockGap":true}},"textdomain":"youtube-channel-block","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
+
+/***/ }),
+
+/***/ "./src/youtube-block/edit.js":
+/*!***********************************!*\
+  !*** ./src/youtube-block/edit.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Edit)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./editor.scss */ "./src/youtube-block/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/**
+ * Retrieves the translation of text.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
+ */
+
+
+/**
+ * React hook that is used to mark the block wrapper element.
+ * It provides all the necessary props like the class name.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
+ */
+
+
+
+
+
+/**
+ * WordPress components
+ */
+
+
+/**
+ * React hooks
+ */
+
+
+/**
+ * Block editor utilities
+ */
+
+
+/**
+ * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
+ * Those files can contain any CSS code that gets applied to the editor.
+ *
+ * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ */
+
+
+/**
+ * The edit function describes the structure of your block in the context of the
+ * editor. This represents what the editor will render when the block is used.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
+ *
+ * @param {Object} props Block props.
+ * @return {Element} Element to render.
+ */
+
+function Edit({
+  attributes,
+  setAttributes,
+  clientId
+}) {
+  const {
+    channelUrl,
+    playlistUrl,
+    apiKey,
+    maxResults,
+    order,
+    isLoading,
+    error,
+    lastUpdated,
+    autoUpdate,
+    updateFrequency,
+    layout,
+    columns,
+    carouselVisible,
+    carouselAutoplay,
+    carouselInterval,
+    showTitles,
+    titlePosition,
+    mediaPlayerSidebarVideos,
+    align
+  } = attributes;
+  const [localSourceUrl, setLocalSourceUrl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(channelUrl || playlistUrl);
+  const [localApiKey, setLocalApiKey] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(apiKey);
+
+  // Function to detect URL type and return appropriate channel/playlist URLs
+  const parseSourceUrl = url => {
+    if (!url) return {
+      channelUrl: '',
+      playlistUrl: ''
+    };
+
+    // Check if it's a playlist URL
+    if (url.includes('playlist?list=') || url.includes('/playlist/')) {
+      return {
+        channelUrl: '',
+        playlistUrl: url
+      };
+    }
+
+    // Check if it's a channel URL (various formats)
+    if (url.includes('youtube.com/@') || url.includes('youtube.com/c/') || url.includes('youtube.com/channel/') || url.includes('youtube.com/user/')) {
+      return {
+        channelUrl: url,
+        playlistUrl: ''
+      };
+    }
+
+    // If we can't determine, assume it's a channel URL
+    return {
+      channelUrl: url,
+      playlistUrl: ''
+    };
+  };
+
+  // Auto-fetch function that uses the source URL
+  const autoFetchVideos = async sourceUrl => {
+    if (!localApiKey || !sourceUrl) {
+      return;
+    }
+    const {
+      channelUrl,
+      playlistUrl
+    } = parseSourceUrl(sourceUrl);
+    setAttributes({
+      isLoading: true,
+      error: ''
+    });
+    try {
+      const data = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default()({
+        path: '/youtube-channel-block/v1/fetch-videos',
+        method: 'POST',
+        data: {
+          channel_url: channelUrl,
+          playlist_url: playlistUrl,
+          api_key: localApiKey,
+          max_results: maxResults,
+          order: order,
+          force_refresh: false // Use cache for auto-fetch
+        }
+      });
+      const embedBlocks = data.videos.map(video => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__.createBlock)('core/embed', {
+        url: video.video_url,
+        providerNameSlug: 'youtube',
+        responsive: true
+      }));
+      replaceInnerBlocks(clientId, embedBlocks);
+      setAttributes({
+        isLoading: false,
+        error: '',
+        lastUpdated: new Date().toISOString(),
+        channelUrl: channelUrl,
+        playlistUrl: playlistUrl,
+        apiKey: localApiKey
+      });
+      setSourceChangeNotice(''); // Clear any source change notice
+
+      // Show cache status
+      if (data.cached) {
+        setSourceChangeNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Data loaded from cache. Use "Clear Cache" to force fresh data.', 'youtube-channel-block'));
+        setTimeout(() => setSourceChangeNotice(''), 5000);
+      }
+    } catch (err) {
+      console.error('YouTube Block Error:', err);
+      let errorMessage = err.message;
+
+      // Provide more helpful error messages for common issues
+      if (err.message.includes('Could not resolve channel URL')) {
+        errorMessage = 'Could not find the YouTube channel. Please check that the URL is correct and the channel exists. Try using a direct channel URL (youtube.com/channel/UC...) if the @handle URL doesn\'t work.';
+      } else if (err.message.includes('Channel not found')) {
+        errorMessage = 'Channel not found or has no uploaded videos. Please verify the channel URL and ensure it has public videos.';
+      } else if (err.message.includes('YouTube API error')) {
+        errorMessage = `${err.message} Please check your API key and ensure it has YouTube Data API v3 access enabled.`;
+      } else {
+        errorMessage = `${err.message} Please check your API key and URLs, and ensure the plugin is properly activated.`;
+      }
+      setAttributes({
+        isLoading: false,
+        error: errorMessage
+      });
+    }
+  };
+
+  // Handle source URL changes with auto-refresh
+  const handleSourceUrlChange = newUrl => {
+    setLocalSourceUrl(newUrl);
+    // Auto-refresh if we have a valid URL and API key
+    if (newUrl && localApiKey) {
+      // Small delay to ensure state updates are processed
+      setTimeout(() => {
+        autoFetchVideos(newUrl);
+      }, 100);
+    }
+  };
+  const {
+    replaceInnerBlocks
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/block-editor');
+
+  // Track previous source URL to detect changes
+  const [previousSourceUrl, setPreviousSourceUrl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)(localSourceUrl);
+  const [sourceChangeNotice, setSourceChangeNotice] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('');
+
+  // Clear videos when source changes
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    if (previousSourceUrl !== localSourceUrl && localSourceUrl) {
+      // Clear existing videos when source changes
+      replaceInnerBlocks(clientId, []);
+      const {
+        channelUrl,
+        playlistUrl
+      } = parseSourceUrl(localSourceUrl);
+      setAttributes({
+        error: '',
+        lastUpdated: '',
+        channelUrl: channelUrl,
+        playlistUrl: playlistUrl
+      });
+
+      // Show notice about source change
+      setSourceChangeNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Source changed - videos cleared. Click "Refresh Videos" to fetch new content.', 'youtube-channel-block'));
+
+      // Clear notice after 5 seconds
+      setTimeout(() => setSourceChangeNotice(''), 5000);
+    }
+    setPreviousSourceUrl(localSourceUrl);
+  }, [localSourceUrl, clientId, replaceInnerBlocks, setAttributes, previousSourceUrl]);
+
+  // Auto-enable titles for media player layout
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    if (layout === 'media-player' && !showTitles) {
+      setAttributes({
+        showTitles: true
+      });
+    }
+  }, [layout, showTitles, setAttributes]);
+  const wrapperProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
+    className: ['wp-block-youtube-channel-block', align ? `align${align}` : '', layout === 'list' ? 'is-layout-list' : '', layout === 'grid' ? 'is-layout-grid' : '', layout === 'carousel' ? 'is-layout-carousel' : '', layout === 'media-player' ? 'is-layout-media-player' : '', showTitles ? 'has-titles' : '', showTitles ? `title-position-${titlePosition}` : ''].filter(Boolean).join(' '),
+    'data-carousel-visible': layout === 'carousel' ? String(carouselVisible) : undefined,
+    'data-carousel-autoplay': layout === 'carousel' ? String(carouselAutoplay) : undefined,
+    'data-carousel-interval': layout === 'carousel' ? String(carouselInterval) : undefined,
+    'data-show-titles': String(showTitles),
+    'data-title-position': titlePosition
+  });
+
+  // Different inner blocks handling based on layout
+  let innerBlocksProps;
+  if (layout === 'carousel') {
+    // Carousel uses Splide but shows as grid in editor
+    innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
+      className: 'youtube-channel-block-inner-blocks splide__list has-columns-3'
+    }, {
+      templateLock: false,
+      allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading']
+    });
+  } else if (layout === 'media-player') {
+    // Media player shows as grid in editor
+    innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
+      className: 'youtube-channel-block-inner-blocks has-columns-3'
+    }, {
+      templateLock: false,
+      allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading']
+    });
+  } else {
+    // Default behavior for list and grid layouts
+    innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useInnerBlocksProps)({
+      className: ['youtube-channel-block-inner-blocks', layout === 'grid' ? `has-columns-${columns}` : ''].filter(Boolean).join(' ')
+    }, {
+      templateLock: false,
+      allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading']
+    });
+  }
+  const orderOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Date (newest first)', 'youtube-channel-block'),
+    value: 'date'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Date (oldest first)', 'youtube-channel-block'),
+    value: 'dateAsc'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title (A-Z)', 'youtube-channel-block'),
+    value: 'title'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title (Z-A)', 'youtube-channel-block'),
+    value: 'titleDesc'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Video count', 'youtube-channel-block'),
+    value: 'videoCount'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('View count', 'youtube-channel-block'),
+    value: 'viewCount'
+  }];
+  const layoutOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('List (vertical)', 'youtube-channel-block'),
+    value: 'list'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Grid', 'youtube-channel-block'),
+    value: 'grid'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Carousel', 'youtube-channel-block'),
+    value: 'carousel'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Media Player', 'youtube-channel-block'),
+    value: 'media-player'
+  }];
+  const frequencyOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hourly', 'youtube-channel-block'),
+    value: 'hourly'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Daily', 'youtube-channel-block'),
+    value: 'daily'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Weekly', 'youtube-channel-block'),
+    value: 'weekly'
+  }];
+  const titlePositionOptions = [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Above video', 'youtube-channel-block'),
+    value: 'above'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Left of video', 'youtube-channel-block'),
+    value: 'left'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Right of video', 'youtube-channel-block'),
+    value: 'right'
+  }];
+  const fetchVideos = async () => {
+    if (!localApiKey) {
+      setAttributes({
+        error: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('YouTube API key is required.', 'youtube-channel-block')
+      });
+      return;
+    }
+    if (!localSourceUrl) {
+      setAttributes({
+        error: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please provide a YouTube channel or playlist URL.', 'youtube-channel-block')
+      });
+      return;
+    }
+    const {
+      channelUrl,
+      playlistUrl
+    } = parseSourceUrl(localSourceUrl);
+    setAttributes({
+      isLoading: true,
+      error: ''
+    });
+    try {
+      const data = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default()({
+        path: '/youtube-channel-block/v1/fetch-videos',
+        method: 'POST',
+        data: {
+          channel_url: channelUrl,
+          playlist_url: playlistUrl,
+          api_key: localApiKey,
+          max_results: maxResults,
+          order: order,
+          force_refresh: true // Force fresh data on manual refresh
+        }
+      });
+      const embedBlocks = data.videos.map(video => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__.createBlock)('core/embed', {
+        url: video.video_url,
+        providerNameSlug: 'youtube',
+        responsive: true
+      }));
+      replaceInnerBlocks(clientId, embedBlocks);
+      setAttributes({
+        isLoading: false,
+        error: '',
+        lastUpdated: new Date().toISOString(),
+        channelUrl: channelUrl,
+        playlistUrl: playlistUrl,
+        apiKey: localApiKey
+      });
+      setSourceChangeNotice(''); // Clear any source change notice
+
+      // Show cache status
+      if (data.cached) {
+        setSourceChangeNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Data loaded from cache. Use "Clear Cache" to force fresh data.', 'youtube-channel-block'));
+        setTimeout(() => setSourceChangeNotice(''), 5000);
+      }
+    } catch (err) {
+      console.error('YouTube Block Error:', err);
+      let errorMessage = err.message;
+
+      // Provide more helpful error messages for common issues
+      if (err.message.includes('Could not resolve channel URL')) {
+        errorMessage = 'Could not find the YouTube channel. Please check that the URL is correct and the channel exists. Try using a direct channel URL (youtube.com/channel/UC...) if the @handle URL doesn\'t work.';
+      } else if (err.message.includes('Channel not found')) {
+        errorMessage = 'Channel not found or has no uploaded videos. Please verify the channel URL and ensure it has public videos.';
+      } else if (err.message.includes('YouTube API error')) {
+        errorMessage = `${err.message} Please check your API key and ensure it has YouTube Data API v3 access enabled.`;
+      } else {
+        errorMessage = `${err.message} Please check your API key and URLs, and ensure the plugin is properly activated.`;
+      }
+      setAttributes({
+        isLoading: false,
+        error: errorMessage
+      });
+    }
+  };
+  const clearVideos = async () => {
+    replaceInnerBlocks(clientId, []);
+    setAttributes({
+      error: '',
+      lastUpdated: ''
+    });
+    setSourceChangeNotice(''); // Clear any source change notice
+
+    // Also clear the cache when clearing videos
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default()({
+        path: '/youtube-channel-block/v1/clear-cache',
+        method: 'POST'
+      });
+    } catch (err) {
+      console.log('Cache clear failed:', err);
+    }
+  };
+  const clearCache = async () => {
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_2___default()({
+        path: '/youtube-channel-block/v1/clear-cache',
+        method: 'POST'
+      });
+      setAttributes({
+        error: ''
+      });
+      // Show success message
+      setSourceChangeNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Cache cleared successfully. Next fetch will get fresh data.', 'youtube-channel-block'));
+      setTimeout(() => setSourceChangeNotice(''), 3000);
+    } catch (err) {
+      setAttributes({
+        error: `Cache clear failed: ${err.message}`
+      });
+    }
+  };
+
+  // Show placeholder if no source URL is provided
+  if (!localSourceUrl) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      ...wrapperProps,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Placeholder, {
+        icon: "video-alt3",
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('YouTube Videos Block', 'youtube-channel-block'),
+        instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter a YouTube channel or playlist URL to fetch and display videos.', 'youtube-channel-block'),
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+          className: "youtube-channel-block-placeholder-controls",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('YouTube API Key', 'youtube-channel-block'),
+            value: localApiKey,
+            onChange: setLocalApiKey,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Get your API key from Google Cloud Console', 'youtube-channel-block'),
+            placeholder: "AIzaSy..."
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Source URL', 'youtube-channel-block'),
+            value: localSourceUrl,
+            onChange: handleSourceUrlChange,
+            placeholder: "https://www.youtube.com/@channelname or https://www.youtube.com/playlist?list=...",
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter a YouTube channel URL or playlist URL', 'youtube-channel-block')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of videos', 'youtube-channel-block'),
+            value: maxResults,
+            onChange: value => setAttributes({
+              maxResults: value
+            }),
+            min: 1,
+            max: 50
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort order', 'youtube-channel-block'),
+            value: order,
+            options: orderOptions,
+            onChange: value => setAttributes({
+              order: value
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+            variant: "primary",
+            onClick: fetchVideos,
+            disabled: isLoading || !localApiKey,
+            children: isLoading ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fetching...', 'youtube-channel-block') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fetch Videos', 'youtube-channel-block')
+          })]
+        })
+      })
+    });
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+    ...wrapperProps,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('YouTube Settings', 'youtube-channel-block'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('YouTube API Key', 'youtube-channel-block'),
+          value: localApiKey,
+          onChange: setLocalApiKey,
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Get your API key from Google Cloud Console', 'youtube-channel-block')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Source URL', 'youtube-channel-block'),
+          value: localSourceUrl,
+          onChange: handleSourceUrlChange,
+          placeholder: "https://www.youtube.com/@channelname or https://www.youtube.com/playlist?list=...",
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter a YouTube channel URL or playlist URL', 'youtube-channel-block')
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of videos', 'youtube-channel-block'),
+          value: maxResults,
+          onChange: value => setAttributes({
+            maxResults: value
+          }),
+          min: 1,
+          max: 50
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort order', 'youtube-channel-block'),
+          value: order,
+          options: orderOptions,
+          onChange: value => setAttributes({
+            order: value
+          })
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Layout', 'youtube-channel-block'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Layout Type', 'youtube-channel-block'),
+          value: layout,
+          options: layoutOptions,
+          onChange: value => setAttributes({
+            layout: value
+          })
+        }), layout === 'grid' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Columns', 'youtube-channel-block'),
+          value: columns,
+          onChange: value => setAttributes({
+            columns: value
+          }),
+          min: 1,
+          max: 6
+        }), layout === 'carousel' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Visible videos', 'youtube-channel-block'),
+            value: carouselVisible,
+            onChange: value => setAttributes({
+              carouselVisible: value
+            }),
+            min: 1,
+            max: 6
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Autoplay', 'youtube-channel-block'),
+            checked: carouselAutoplay,
+            onChange: value => setAttributes({
+              carouselAutoplay: value
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Interval (seconds)', 'youtube-channel-block'),
+            value: carouselInterval,
+            onChange: value => setAttributes({
+              carouselInterval: value
+            }),
+            min: 1,
+            max: 12
+          })]
+        }), layout === 'list' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show video titles', 'youtube-channel-block'),
+            checked: showTitles,
+            onChange: value => setAttributes({
+              showTitles: value
+            })
+          }), showTitles && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title position', 'youtube-channel-block'),
+            value: titlePosition,
+            options: titlePositionOptions,
+            onChange: value => setAttributes({
+              titlePosition: value
+            })
+          })]
+        }), layout === 'media-player' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sidebar videos', 'youtube-channel-block'),
+            value: mediaPlayerSidebarVideos,
+            onChange: value => setAttributes({
+              mediaPlayerSidebarVideos: value
+            }),
+            min: 3,
+            max: 10,
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of videos to show in the sidebar', 'youtube-channel-block')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+            className: "components-base-control",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+              className: "components-base-control__label",
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Video titles', 'youtube-channel-block')
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+              className: "components-base-control__help",
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Titles are always visible in media player layout and positioned to the right of thumbnails.', 'youtube-channel-block')
+            })]
+          })]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Auto Update', 'youtube-channel-block'),
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Auto-update videos', 'youtube-channel-block'),
+          checked: autoUpdate,
+          onChange: value => setAttributes({
+            autoUpdate: value
+          })
+        }), autoUpdate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Update frequency', 'youtube-channel-block'),
+          value: updateFrequency,
+          options: frequencyOptions,
+          onChange: value => setAttributes({
+            updateFrequency: value
+          })
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+      className: "youtube-channel-block-container",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+        className: "youtube-channel-block-header",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h3", {
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('YouTube Videos', 'youtube-channel-block')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+            className: "youtube-channel-block-meta",
+            children: [lastUpdated && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+              className: "last-updated",
+              children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Last updated:', 'youtube-channel-block'), " ", new Date(lastUpdated).toLocaleString()]
+            }), sourceChangeNotice && sourceChangeNotice.includes('cache') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+              className: "cache-status",
+              children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('📦 Cached', 'youtube-channel-block')
+            }), autoUpdate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+              className: "auto-update-badge",
+              children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Auto-update:', 'youtube-channel-block'), " ", updateFrequency]
+            })]
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+          className: "youtube-channel-block-actions",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+            variant: "primary",
+            onClick: fetchVideos,
+            disabled: isLoading || !localApiKey,
+            children: isLoading ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fetching...', 'youtube-channel-block') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Refresh Videos', 'youtube-channel-block')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+            variant: "secondary",
+            onClick: clearVideos,
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Clear Videos', 'youtube-channel-block')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+            variant: "tertiary",
+            onClick: clearCache,
+            title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Clear cached data to force fresh API calls', 'youtube-channel-block'),
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Clear Cache', 'youtube-channel-block')
+          })]
+        })]
+      }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Notice, {
+        status: "error",
+        isDismissible: false,
+        children: error
+      }), sourceChangeNotice && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Notice, {
+        status: "info",
+        isDismissible: false,
+        children: sourceChangeNotice
+      }), isLoading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+        className: "youtube-channel-block-loading",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Spinner, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Fetching videos...', 'youtube-channel-block')
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+        ...innerBlocksProps
+      })]
+    })]
+  });
+}
+
+/***/ }),
+
+/***/ "./src/youtube-block/editor.scss":
+/*!***************************************!*\
+  !*** ./src/youtube-block/editor.scss ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./src/youtube-block/index.js":
+/*!************************************!*\
+  !*** ./src/youtube-block/index.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/youtube-block/style.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/youtube-block/edit.js");
+/* harmony import */ var _save__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./save */ "./src/youtube-block/save.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./src/youtube-block/block.json");
+/**
+ * Registers a new block provided a unique name and an object defining its behavior.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ */
+
+
+/**
+ * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
+ * All files containing `style` keyword are bundled together. The code used
+ * gets applied both to the front of your site and to the editor.
+ *
+ * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+/**
+ * Every block starts by registering a new block type definition.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ */
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
+  /**
+   * @see ./edit.js
+   */
+  edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
+  /**
+   * @see ./save.js
+   */
+  save: _save__WEBPACK_IMPORTED_MODULE_3__["default"]
+});
+
+/***/ }),
+
+/***/ "./src/youtube-block/save.js":
+/*!***********************************!*\
+  !*** ./src/youtube-block/save.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ save)
+/* harmony export */ });
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/**
+ * React hook that is used to mark the block wrapper element.
+ * It provides all the necessary props like the class name.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
+ */
+
+
+/**
+ * The save function defines the way in which the different attributes should
+ * be combined into the final markup, which is then serialized by the block
+ * editor into `post_content`.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
+ *
+ * @param {Object} props Block props.
+ * @return {Element} Element to render.
+ */
+
+function save({
+  attributes
+}) {
+  const {
+    lastUpdated,
+    autoUpdate,
+    updateFrequency,
+    layout,
+    columns,
+    carouselVisible,
+    carouselAutoplay,
+    carouselInterval,
+    showTitles,
+    titlePosition,
+    mediaPlayerSidebarVideos,
+    align
+  } = attributes;
+  const wrapperProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save({
+    className: ['wp-block-youtube-channel-block', align ? `align${align}` : '', layout === 'list' ? 'is-layout-list' : '', layout === 'grid' ? 'is-layout-grid' : '', layout === 'carousel' ? 'is-layout-carousel' : '', layout === 'media-player' ? 'is-layout-media-player' : '', showTitles ? 'has-titles' : '', showTitles ? `title-position-${titlePosition}` : ''].filter(Boolean).join(' '),
+    'data-show-titles': String(showTitles),
+    'data-title-position': titlePosition,
+    'data-media-player-sidebar-videos': layout === 'media-player' ? String(mediaPlayerSidebarVideos) : undefined
+  });
+
+  // For carousel layout, inject Splide classes into inner blocks
+  if (layout === 'carousel') {
+    const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useInnerBlocksProps.save({
+      className: 'youtube-channel-block-inner-blocks splide__list'
+    });
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      ...wrapperProps,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "splide",
+        "data-carousel-visible": carouselVisible,
+        "data-carousel-autoplay": carouselAutoplay,
+        "data-carousel-interval": carouselInterval,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+          className: "splide__track",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+            ...innerBlocksProps
+          })
+        })
+      })
+    });
+  }
+
+  // For other layouts, use standard structure
+  const innerBlocksProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useInnerBlocksProps.save({
+    className: ['youtube-channel-block-inner-blocks', layout === 'grid' ? `has-columns-${columns}` : ''].filter(Boolean).join(' ')
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    ...wrapperProps,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      ...innerBlocksProps
+    })
+  });
+}
+
+/***/ }),
+
+/***/ "./src/youtube-block/style.scss":
+/*!**************************************!*\
+  !*** ./src/youtube-block/style.scss ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "@wordpress/api-fetch":
+/*!**********************************!*\
+  !*** external ["wp","apiFetch"] ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["apiFetch"];
+
+/***/ }),
+
+/***/ "@wordpress/block-editor":
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ }),
+
+/***/ "@wordpress/blocks":
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ }),
+
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["data"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/i18n":
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["ReactJSXRuntime"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"youtube-block/index": 0,
+/******/ 			"youtube-block/style-index": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkyoutube_channel_block"] = globalThis["webpackChunkyoutube_channel_block"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["youtube-block/style-index"], () => (__webpack_require__("./src/youtube-block/index.js")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=index.js.map
