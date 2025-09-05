@@ -39,8 +39,8 @@ document.addEventListener( 'DOMContentLoaded', () => {
     const sidebarVideos = parseInt(block.dataset.mediaPlayerSidebarVideos) || 5;
     
     if (isMediaPlayer) {
-      // Handle Media Player layout
-      initializeMediaPlayer(block, showTitles, sidebarVideos);
+      // Handle Media Player layout - titles are always shown
+      initializeMediaPlayer(block, true, sidebarVideos);
     } else if (isListLayout && showTitles && titlePosition) {
       // Handle regular title display only for list layout
       handleTitleDisplay(block, showTitles, titlePosition);

@@ -198,12 +198,13 @@ function youtube_block_fetch_videos( $request ) {
 		$videos = array();
 
 		if ( ! empty( $channel_url ) ) {
-			// Order is not supported by playlistItems; ignore downstream
 			$videos = youtube_block_fetch_channel_videos( $channel_url, $api_key, $max_results );
 		} elseif ( ! empty( $playlist_url ) ) {
-			// Order is not supported by playlistItems; ignore here too
 			$videos = youtube_block_fetch_playlist_videos( $playlist_url, $api_key, $max_results );
 		}
+		
+		// Apply client-side sorting since YouTube API doesn't support ordering for playlistItems
+		$videos = youtube_block_sort_videos( $videos, $order );
 
 		// Cache the results for 1 hour (3600 seconds)
 		// Use longer cache for better performance
@@ -641,6 +642,63 @@ function youtube_block_optimize_embeds( $html, $url, $attr, $post_id ) {
 	$html = str_replace( '?feature=oembed', '?feature=oembed&rel=0&modestbranding=1', $html );
 	
 	return $html;
+}
+
+/**
+ * Sort videos based on the specified order
+ */
+function youtube_block_sort_videos( $videos, $order ) {
+	if ( empty( $videos ) || empty( $order ) ) {
+		return $videos;
+	}
+	
+	switch ( $order ) {
+		case 'date':
+			// Sort by date (newest first) - this is usually the default from API
+			usort( $videos, function( $a, $b ) {
+				return strtotime( $b['published_at'] ) - strtotime( $a['published_at'] );
+			});
+			break;
+			
+		case 'dateAsc':
+			// Sort by date (oldest first)
+			usort( $videos, function( $a, $b ) {
+				return strtotime( $a['published_at'] ) - strtotime( $b['published_at'] );
+			});
+			break;
+			
+		case 'title':
+			// Sort by title (A-Z)
+			usort( $videos, function( $a, $b ) {
+				return strcasecmp( $a['title'], $b['title'] );
+			});
+			break;
+			
+		case 'titleDesc':
+			// Sort by title (Z-A)
+			usort( $videos, function( $a, $b ) {
+				return strcasecmp( $b['title'], $a['title'] );
+			});
+			break;
+			
+		case 'videoCount':
+		case 'viewCount':
+			// These would require additional API calls to get video statistics
+			// For now, fall back to date sorting
+			usort( $videos, function( $a, $b ) {
+				return strtotime( $b['published_at'] ) - strtotime( $a['published_at'] );
+			});
+			break;
+			
+		default:
+			// Default to date sorting (newest first)
+			usort( $videos, function( $a, $b ) {
+				return strtotime( $b['published_at'] ) - strtotime( $a['published_at'] );
+			});
+			break;
+	}
+	
+	return $videos;
 }
 
 /**

@@ -205,6 +205,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 		setPreviousSourceUrl(localSourceUrl);
 	}, [localSourceUrl, clientId, replaceInnerBlocks, setAttributes, previousSourceUrl]);
+	
+	// Auto-enable titles for media player layout
+	useEffect(() => {
+		if (layout === 'media-player' && !showTitles) {
+			setAttributes({ showTitles: true });
+		}
+	}, [layout, showTitles, setAttributes]);
 
 	const wrapperProps = useBlockProps({
 		className: [
@@ -224,22 +231,37 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		'data-title-position': titlePosition,
 	});
 
-	// For carousel layout, inject Splide classes into inner blocks
-	const innerBlocksProps = layout === 'carousel' 
-		? useInnerBlocksProps(
-			{ className: 'youtube-channel-block-inner-blocks splide__list' },
-			{
-				templateLock: false,
-				allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading'],
-			}
-		)
-		: useInnerBlocksProps(
-			{ className: ['youtube-channel-block-inner-blocks', layout === 'grid' || 'carousel'? `has-columns-${columns}` : ''].filter(Boolean).join(' ') },
+	// Different inner blocks handling based on layout
+	let innerBlocksProps;
+	
+	if (layout === 'carousel') {
+		// Carousel uses Splide but shows as grid in editor
+		innerBlocksProps = useInnerBlocksProps(
+			{ className: 'youtube-channel-block-inner-blocks splide__list has-columns-3' },
 			{
 				templateLock: false,
 				allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading'],
 			}
 		);
+	} else if (layout === 'media-player') {
+		// Media player shows as grid in editor
+		innerBlocksProps = useInnerBlocksProps(
+			{ className: 'youtube-channel-block-inner-blocks has-columns-3' },
+			{
+				templateLock: false,
+				allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading'],
+			}
+		);
+	} else {
+		// Default behavior for list and grid layouts
+		innerBlocksProps = useInnerBlocksProps(
+			{ className: ['youtube-channel-block-inner-blocks', layout === 'grid' ? `has-columns-${columns}` : ''].filter(Boolean).join(' ') },
+			{
+				templateLock: false,
+				allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading'],
+			}
+		);
+	}
 
 	const orderOptions = [
 		{ label: __('Date (newest first)', 'youtube-channel-block'), value: 'date' },
@@ -522,11 +544,12 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								max={10}
 								help={__('Number of videos to show in the sidebar', 'youtube-channel-block')}
 							/>
-							<ToggleControl
-								label={__('Show video titles', 'youtube-channel-block')}
-								checked={showTitles}
-								onChange={(value) => setAttributes({ showTitles: value })}
-							/>
+							<div className="components-base-control">
+								<div className="components-base-control__label">{__('Video titles', 'youtube-channel-block')}</div>
+								<div className="components-base-control__help">
+									{__('Titles are always visible in media player layout and positioned to the right of thumbnails.', 'youtube-channel-block')}
+								</div>
+							</div>
 						</>
 					)}
 				</PanelBody>
