@@ -158,7 +158,8 @@
 		}
 	}
 	
-	&.is-layout-grid {
+	&.is-layout-grid,
+	&.is-layout-carousel {
 		.youtube-channel-block-inner-blocks {
 			display: grid;
 			flex-direction: unset; // Override the default flex
@@ -169,14 +170,6 @@
 			&.has-columns-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 			&.has-columns-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 			&.has-columns-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-		}
-	}
-
-	&.is-layout-carousel {
-		.youtube-channel-block-inner-blocks {
-			display: flex;
-			flex-direction: row;
-			overflow: hidden;
 		}
 	}
 

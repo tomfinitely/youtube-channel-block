@@ -113,6 +113,11 @@ function youtube_block_register_rest_routes() {
 				'type' => 'string',
 				'default' => 'date',
 			),
+			'force_refresh' => array(
+				'required' => false,
+				'type' => 'boolean',
+				'default' => false,
+			),
 		),
 	) );
 
@@ -161,6 +166,7 @@ function youtube_block_fetch_videos( $request ) {
 	$api_key = $request->get_param( 'api_key' );
 	$max_results = $request->get_param( 'max_results' );
 	$order = $request->get_param( 'order' );
+	$force_refresh = $request->get_param( 'force_refresh' );
 
 	if ( empty( $api_key ) ) {
 		return new WP_Error( 'missing_api_key', __( 'YouTube API key is required.', 'youtube-channel-block' ), array( 'status' => 400 ) );
@@ -173,16 +179,19 @@ function youtube_block_fetch_videos( $request ) {
 	// Create cache key based on parameters
 	$cache_key = 'youtube_block_' . md5( $channel_url . $playlist_url . $api_key . $max_results . $order );
 	
-	// Try to get cached data first
-	$cached_data = get_transient( $cache_key );
-	if ( $cached_data !== false ) {
-		return rest_ensure_response( array(
-			'success' => true,
-			'videos' => $cached_data['videos'],
-			'count' => count( $cached_data['videos'] ),
-			'cached' => true,
-			'cache_expires' => $cached_data['expires'],
-		) );
+	// Try to get cached data first (unless force refresh is requested)
+	$cached_data = false;
+	if ( ! $force_refresh ) {
+		$cached_data = get_transient( $cache_key );
+		if ( $cached_data !== false ) {
+			return rest_ensure_response( array(
+				'success' => true,
+				'videos' => $cached_data['videos'],
+				'count' => count( $cached_data['videos'] ),
+				'cached' => true,
+				'cache_expires' => $cached_data['expires'],
+			) );
+		}
 	}
 
 	try {

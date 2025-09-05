@@ -35,13 +35,14 @@ document.addEventListener( 'DOMContentLoaded', () => {
     const showTitles = block.dataset.showTitles === 'true';
     const titlePosition = block.dataset.titlePosition || 'above';
     const isMediaPlayer = block.classList.contains('is-layout-media-player');
+    const isListLayout = block.classList.contains('is-layout-list');
     const sidebarVideos = parseInt(block.dataset.mediaPlayerSidebarVideos) || 5;
     
     if (isMediaPlayer) {
       // Handle Media Player layout
       initializeMediaPlayer(block, showTitles, sidebarVideos);
-    } else if (showTitles && titlePosition) {
-      // Handle regular title display for other layouts
+    } else if (isListLayout && showTitles && titlePosition) {
+      // Handle regular title display only for list layout
       handleTitleDisplay(block, showTitles, titlePosition);
     }
   });

@@ -125,6 +125,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					api_key: localApiKey,
 					max_results: maxResults,
 					order: order,
+					force_refresh: false, // Use cache for auto-fetch
 				},
 			});
 
@@ -233,7 +234,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 			}
 		)
 		: useInnerBlocksProps(
-			{ className: ['youtube-channel-block-inner-blocks', layout === 'grid' ? `has-columns-${columns}` : ''].filter(Boolean).join(' ') },
+			{ className: ['youtube-channel-block-inner-blocks', layout === 'grid' || 'carousel'? `has-columns-${columns}` : ''].filter(Boolean).join(' ') },
 			{
 				templateLock: false,
 				allowedBlocks: ['core/embed', 'core/paragraph', 'core/heading'],
@@ -293,6 +294,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					api_key: localApiKey,
 					max_results: maxResults,
 					order: order,
+					force_refresh: true, // Force fresh data on manual refresh
 				},
 			});
 
@@ -331,13 +333,23 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		}
 	};
 
-	const clearVideos = () => {
+	const clearVideos = async () => {
 		replaceInnerBlocks(clientId, []);
 		setAttributes({
 			error: '',
 			lastUpdated: '',
 		});
 		setSourceChangeNotice(''); // Clear any source change notice
+		
+		// Also clear the cache when clearing videos
+		try {
+			await apiFetch({
+				path: '/youtube-channel-block/v1/clear-cache',
+				method: 'POST',
+			});
+		} catch (err) {
+			console.log('Cache clear failed:', err);
+		}
 	};
 
 	const clearCache = async () => {

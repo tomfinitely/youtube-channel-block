@@ -466,7 +466,23 @@
   height: 100%;
 }
 .wp-block-youtube-channel-block.is-layout-carousel .splide .wp-block-embed .wp-block-embed__wrapper {
-  height: 200px;
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+}
+.wp-block-youtube-channel-block.is-layout-carousel .splide .wp-block-embed .wp-block-embed__wrapper iframe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+@supports not (aspect-ratio: 16/9) {
+  .wp-block-youtube-channel-block.is-layout-carousel .splide .wp-block-embed .wp-block-embed__wrapper {
+    height: 200px;
+  }
 }
 .wp-block-youtube-channel-block.is-layout-carousel .splide .wp-block-embed.wp-has-aspect-ratio {
   flex-shrink: 0;
@@ -601,7 +617,14 @@
 }
 .wp-block-youtube-channel-block.is-layout-media-player .youtube-media-player .youtube-main-video .youtube-main-video-container .wp-block-embed iframe {
   width: 100%;
+  aspect-ratio: 16/9;
   border-radius: 8px;
+}
+@supports not (aspect-ratio: 16/9) {
+  .wp-block-youtube-channel-block.is-layout-media-player .youtube-media-player .youtube-main-video .youtube-main-video-container .wp-block-embed iframe {
+    height: 56.25vw;
+    max-height: 400px;
+  }
 }
 .wp-block-youtube-channel-block.is-layout-media-player .youtube-media-player .youtube-sidebar {
   flex: 0 0 33.333%;

@@ -137,33 +137,28 @@
   flex-direction: column;
   gap: var(--wp--style--block-gap, 20px);
 }
-.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks {
+.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks, .wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks {
   display: grid;
   flex-direction: unset;
   gap: var(--wp--style--block-gap, 1rem);
 }
-.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-1 {
+.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-1, .wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks.has-columns-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
-.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-2 {
+.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-2, .wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks.has-columns-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-3 {
+.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-3, .wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks.has-columns-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-4 {
+.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-4, .wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks.has-columns-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
-.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-5 {
+.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-5, .wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks.has-columns-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
-.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-6 {
+.wp-block-youtube-channel-block.is-layout-grid .youtube-channel-block-inner-blocks.has-columns-6, .wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks.has-columns-6 {
   grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-.wp-block-youtube-channel-block.is-layout-carousel .youtube-channel-block-inner-blocks {
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
 }
 .wp-block-youtube-channel-block .components-notice {
   margin: 0 0 20px 0;
