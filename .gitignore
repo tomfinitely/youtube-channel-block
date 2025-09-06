@@ -58,3 +58,4 @@ wp-config-local.php
 # Temporary files
 *.tmp
 *.temp
+/build
