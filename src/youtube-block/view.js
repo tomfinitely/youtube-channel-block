@@ -170,13 +170,15 @@ function initializeMediaPlayer(block, showTitles, sidebarVideos) {
   const mainVideoContainer = document.createElement('div');
   mainVideoContainer.className = 'youtube-main-video-container';
   
-  if (showTitles && mainVideoId) {
-    const mainTitle = document.createElement('h3');
-    mainTitle.className = 'youtube-main-video-title';
-    mainTitle.setAttribute('data-video-id', mainVideoId);
-    fetchVideoTitle(mainVideoId, mainTitle);
-    mainVideoContainer.appendChild(mainTitle);
-  }
+  // Note: Main video title is intentionally hidden in media player layout
+  // Only sidebar titles are shown for better UX
+  // if (showTitles && mainVideoId) {
+  //   const mainTitle = document.createElement('h3');
+  //   mainTitle.className = 'youtube-main-video-title';
+  //   mainTitle.setAttribute('data-video-id', mainVideoId);
+  //   fetchVideoTitle(mainVideoId, mainTitle);
+  //   mainVideoContainer.appendChild(mainTitle);
+  // }
   
   mainVideoContainer.appendChild(mainVideo.cloneNode(true));
   mainVideoArea.appendChild(mainVideoContainer);
@@ -251,14 +253,15 @@ function switchToVideo(block, videoId, newEmbed, showTitles) {
     }
   }
   
-  // Update main video title
-  if (showTitles) {
-    const mainTitle = mainVideoContainer.querySelector('.youtube-main-video-title');
-    if (mainTitle) {
-      mainTitle.setAttribute('data-video-id', videoId);
-      fetchVideoTitle(videoId, mainTitle);
-    }
-  }
+  // Note: Main video title is not shown in media player layout
+  // Only sidebar titles are displayed
+  // if (showTitles) {
+  //   const mainTitle = mainVideoContainer.querySelector('.youtube-main-video-title');
+  //   if (mainTitle) {
+  //     mainTitle.setAttribute('data-video-id', videoId);
+  //     fetchVideoTitle(videoId, mainTitle);
+  //   }
+  // }
   
   // Update active state in sidebar
   const sidebarItems = block.querySelectorAll('.youtube-sidebar-item');

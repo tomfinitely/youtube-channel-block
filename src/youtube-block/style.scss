@@ -326,12 +326,10 @@
 					position: sticky;
 					top: 2rem;
 					
+					// Main video title is hidden in media player layout
+					// Only sidebar titles are shown for better UX
 					.youtube-main-video-title {
-						font-size: 1.25rem;
-						font-weight: 600;
-						margin-bottom: 1rem;
-						color: inherit;
-						line-height: 1.4;
+						display: none !important;
 					}
 					
 					.wp-block-embed {
@@ -541,8 +539,9 @@
 			.youtube-media-player {
 				.youtube-main-video {
 					.youtube-main-video-container {
+						// Main video title is hidden in media player layout
 						.youtube-main-video-title {
-							font-size: 1.1rem;
+							display: none !important;
 						}
 						
 						.wp-block-embed iframe {
