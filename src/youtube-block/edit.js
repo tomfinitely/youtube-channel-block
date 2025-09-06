@@ -78,6 +78,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		showTitles,
 		titlePosition,
 		mediaPlayerSidebarVideos,
+		enableDeepLinking,
 		align 
 	} = attributes;
 
@@ -577,6 +578,14 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								</div>
 							</div>
 						</>
+					)}
+					{(layout === 'carousel' || layout === 'media-player') && (
+						<ToggleControl
+							label={__('Enable deep linking', 'youtube-channel-block')}
+							checked={enableDeepLinking}
+							onChange={(value) => setAttributes({ enableDeepLinking: value })}
+							help={__('Allow users to link directly to specific videos using URL hashes', 'youtube-channel-block')}
+						/>
 					)}
 				</PanelBody>
 

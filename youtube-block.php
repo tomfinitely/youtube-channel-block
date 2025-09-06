@@ -3,7 +3,7 @@
  * Plugin Name:       YouTube Channel Block
  * Plugin URI:        https://github.com/tomfinitely/youtube-channel-block
  * Description:       A WordPress block that fetches and displays YouTube videos from channels or playlists using the YouTube Data API with automatic updates via cron jobs.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Requires at least: 6.7
  * Requires PHP:      7.4
  * Author:            Tom Finley
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'YOUTUBE_BLOCK_VERSION', '0.2.0' );
+define( 'YOUTUBE_BLOCK_VERSION', '0.3.0' );
 define( 'YOUTUBE_BLOCK_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'YOUTUBE_BLOCK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**

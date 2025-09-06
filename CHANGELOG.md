@@ -11,7 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 🌍 Full internationalization support
 - 📊 Analytics integration
 - 🎨 Additional layout templates
-- 🔗 Deep linking for carousel and media player
+- 🔧 Advanced permalink integration
+
+## [0.3.0] - 2025-01-06
+
+### Added
+- 🔗 **Deep Linking Support**: Enable URL-based video navigation for carousel and media player layouts
+- 📱 **URL Hash Parameters**: Videos can be accessed directly via URL fragments (e.g., `#video-VIDEO_ID`)
+- 🎯 **Auto-scroll to Video**: Automatic scrolling and highlighting of linked videos on page load
+- ⚡ **Browser History Integration**: Navigation updates browser history for proper back/forward support
+- 🎨 **Visual Feedback**: Active video highlighting with improved visual indicators
+
+### Enhanced
+- 🎠 **Carousel Navigation**: Deep links work seamlessly with Splide.js carousel navigation
+- 🎬 **Media Player Integration**: Sidebar thumbnails support direct linking and sharing
+- 🔄 **State Management**: Improved JavaScript state handling for layout-specific deep linking
+- 📋 **Block Editor Controls**: New toggle control for enabling/disabling deep linking per block
+
+### Technical Improvements
+- 🚀 **URL Parser**: Robust URL fragment parsing and validation
+- 🎯 **Event Handling**: Enhanced click handlers with history management
+- 📱 **Mobile Optimization**: Touch-friendly deep link interactions
+- 🔍 **Error Handling**: Graceful fallbacks for invalid video IDs in URLs
 
 ## [0.2.0] - 2025-01-05
 

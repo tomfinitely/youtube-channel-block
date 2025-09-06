@@ -17,7 +17,7 @@ import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor';
  * @return {Element} Element to render.
  */
 export default function save({ attributes }) {
-	const { lastUpdated, autoUpdate, updateFrequency, layout, columns, carouselVisible, carouselAutoplay, carouselInterval, showTitles, titlePosition, mediaPlayerSidebarVideos, align } = attributes;
+	const { lastUpdated, autoUpdate, updateFrequency, layout, columns, carouselVisible, carouselAutoplay, carouselInterval, showTitles, titlePosition, mediaPlayerSidebarVideos, enableDeepLinking, align } = attributes;
 
 	const wrapperProps = useBlockProps.save({
 		className: [
@@ -33,6 +33,7 @@ export default function save({ attributes }) {
 		'data-show-titles': String(showTitles),
 		'data-title-position': titlePosition,
 		'data-media-player-sidebar-videos': layout === 'media-player' ? String(mediaPlayerSidebarVideos) : undefined,
+		'data-enable-deep-linking': String(enableDeepLinking),
 	});
 
 	// For carousel layout, inject Splide classes into inner blocks

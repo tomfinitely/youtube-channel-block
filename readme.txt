@@ -5,7 +5,7 @@ Tags:              block, youtube, videos, channel, playlist, gutenberg, media, 
 Requires at least: 6.7
 Tested up to:      6.7
 Requires PHP:      7.4
-Stable tag:        0.1.0
+Stable tag:        0.3.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,8 @@ The YouTube Channel Block is a powerful WordPress block that integrates with the
 * **Automatic Updates**: Configurable cron jobs (hourly, daily, weekly) to keep content fresh
 * **Responsive Design**: Mobile-friendly grid layout that adapts to any screen size
 * **InnerBlocks Support**: Uses WordPress core embed blocks for optimal performance
-* **Multiple Layout Options**: List, grid, and carousel display modes
+* **Multiple Layout Options**: List, grid, carousel, and media player display modes
+* **Deep Linking Support**: Direct video URLs for sharing and navigation
 * **Sorting Options**: Sort by date, title, or view count
 * **Customizable Quantity**: Display 1-50 videos per block
 
@@ -91,8 +92,24 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Changelog ==
 
+= 0.3.0 =
+* Added deep linking support for carousel and media player layouts
+* Added URL hash parameters for direct video navigation
+* Added browser history integration
+* Enhanced media player with clickable sidebar thumbnails
+* Improved mobile touch interactions
+
+= 0.2.0 =
+* Added Media Player layout with featured video and sidebar thumbnails
+* Added enhanced carousel layout with Splide.js integration
+* Added comprehensive YouTube URL support including @handles
+* Added smart multi-layered caching system
+* Added functional client-side sorting by date and title
+* Fixed channel URL resolution for all YouTube formats
+* Fixed cron job implementation with proper auto-updates
+
 = 0.1.0 =
-* Release
+* Initial release
 
 == Arbitrary section ==
 

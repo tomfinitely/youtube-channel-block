@@ -5,7 +5,7 @@ return array(
 		'$schema' => 'https://schemas.wp.org/trunk/block.json',
 		'apiVersion' => 3,
 		'name' => 'youtube-channel-block/youtube-channel-block',
-		'version' => '0.2.0',
+		'version' => '0.3.0',
 		'title' => 'YouTube Channel Block',
 		'category' => 'media',
 		'icon' => 'video-alt3',
@@ -85,6 +85,10 @@ return array(
 			'mediaPlayerSidebarVideos' => array(
 				'type' => 'number',
 				'default' => 5
+			),
+			'enableDeepLinking' => array(
+				'type' => 'boolean',
+				'default' => false
 			)
 		),
 		'supports' => array(
