@@ -356,6 +356,35 @@ function initializeCarousel(block, enableDeepLinking = false) {
     embed.classList.add('splide__slide');
   });
   
+  // Fetch video titles for deep linking if enabled
+  if (enableDeepLinking) {
+    embedBlocks.forEach((embed, index) => {
+      const iframe = embed.querySelector('iframe');
+      if (iframe) {
+        const videoId = extractVideoIdFromEmbed(iframe.src);
+        if (videoId) {
+          // Create a temporary title element to fetch the title
+          const tempTitleElement = document.createElement('div');
+          tempTitleElement.setAttribute('data-video-id', videoId);
+          
+          // Listen for the title-loaded event
+          tempTitleElement.addEventListener('title-loaded', (event) => {
+            const title = event.detail.title;
+            const slug = event.detail.slug;
+            
+            if (title && slug) {
+              embed.setAttribute('data-video-title', title);
+              embed.setAttribute('data-video-slug', slug);
+            }
+          });
+          
+          // Fetch title
+          fetchVideoTitle(videoId, tempTitleElement);
+        }
+      }
+    });
+  }
+  
   // Configure Splide options
   const options = {
     type: 'loop',
@@ -395,12 +424,17 @@ function initializeCarousel(block, enableDeepLinking = false) {
       const initialSlug = getVideoTitleFromUrl();
       if (initialSlug) {
         // Find video by slug (we'll need to wait for slugs to be set)
-        setTimeout(() => {
+        const checkForInitialVideo = () => {
           const targetIndex = findVideoIndexBySlug(embedBlocks, initialSlug);
           if (targetIndex !== -1) {
             splideInstance.go(targetIndex);
+          } else {
+            // Try again in a bit if slug hasn't been set yet
+            setTimeout(checkForInitialVideo, 200);
           }
-        }, 500); // Give time for slugs to be set
+        };
+        
+        setTimeout(checkForInitialVideo, 100);
       }
       
       // Update hash when slide changes
@@ -483,6 +517,16 @@ function handleHashChange() {
         console.log('Target index for carousel:', targetIndex);
         if (targetIndex !== -1) {
           splideData.instance.go(targetIndex);
+        } else {
+          // If not found immediately, try again after a short delay
+          // This handles cases where titles are still being fetched
+          setTimeout(() => {
+            const retryIndex = findVideoIndexBySlug(splideData.embedBlocks, videoSlug);
+            console.log('Retry target index for carousel:', retryIndex);
+            if (retryIndex !== -1) {
+              splideData.instance.go(retryIndex);
+            }
+          }, 500);
         }
       }
     }
