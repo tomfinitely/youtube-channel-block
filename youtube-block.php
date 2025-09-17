@@ -1178,7 +1178,22 @@ function youtube_block_get_video_title( $request ) {
  * Get any available API key from existing YouTube blocks
  */
 function youtube_block_get_any_api_key() {
-	// Try to get from any post with a YouTube block
+	// Try to get from block content (this is the primary method)
+	$posts = get_posts( array(
+		'post_type' => 'any',
+		'post_status' => 'publish',
+		'numberposts' => 20, // Increase limit to find API keys
+	) );
+
+	foreach ( $posts as $post ) {
+		$blocks = parse_blocks( $post->post_content );
+		$api_key = youtube_block_extract_api_key_from_blocks( $blocks );
+		if ( ! empty( $api_key ) ) {
+			return $api_key;
+		}
+	}
+
+	// Fallback: try to get from any post with a YouTube block meta
 	$posts = get_posts( array(
 		'post_type' => 'any',
 		'post_status' => 'publish',
@@ -1198,21 +1213,6 @@ function youtube_block_get_any_api_key() {
 		}
 	}
 
-	// Fallback: try to get from block content
-	$posts = get_posts( array(
-		'post_type' => 'any',
-		'post_status' => 'publish',
-		'numberposts' => 10,
-	) );
-
-	foreach ( $posts as $post ) {
-		$blocks = parse_blocks( $post->post_content );
-		$api_key = youtube_block_extract_api_key_from_blocks( $blocks );
-		if ( ! empty( $api_key ) ) {
-			return $api_key;
-		}
-	}
-
 	return '';
 }
 
@@ -1222,7 +1222,7 @@ function youtube_block_get_any_api_key() {
 function youtube_block_extract_api_key_from_blocks( $blocks ) {
 	foreach ( $blocks as $block ) {
 		if ( $block['blockName'] === 'youtube-channel-block/youtube-channel-block' ) {
-			$attributes = $block['attrs'];
+			$attributes = $block['attrs'] ?? array();
 			if ( ! empty( $attributes['apiKey'] ) ) {
 				return $attributes['apiKey'];
 			}

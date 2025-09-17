@@ -175,8 +175,11 @@ function initializeMediaPlayer(block, showTitles, sidebarVideos, enableDeepLinki
         const title = document.createElement('div');
         title.className = 'youtube-sidebar-title';
         title.setAttribute('data-video-id', videoId);
-        fetchVideoTitle(videoId, title);
+        // Set initial placeholder text
+        title.textContent = 'Loading...';
         sidebarItem.appendChild(title);
+        // Fetch title for display purposes only - deep linking will handle its own title fetching
+        fetchVideoTitleForDisplay(videoId, title);
       }
       
       // Add click handler to switch videos
@@ -184,14 +187,8 @@ function initializeMediaPlayer(block, showTitles, sidebarVideos, enableDeepLinki
         switchToVideo(block, videoId, embed, showTitles);
         // Update URL hash for deep linking if enabled
         if (enableDeepLinking) {
-          // Get title from the data attribute or text content
-          const title = sidebarItem.getAttribute('data-video-title') || 
-                       sidebarItem.querySelector('.youtube-sidebar-title')?.textContent ||
-                       `Video ${videoId}`;
-          
-          if (title && title !== `Video ${videoId}`) {
-            updateUrlHashWithTitle(title);
-          }
+          // Fetch deep linking title separately from display title
+          fetchDeepLinkingTitle(videoId, sidebarItem);
         }
       });
       
@@ -267,7 +264,84 @@ function switchToVideo(block, videoId, newEmbed, showTitles) {
   });
 }
 
-// Helper function to fetch video title
+// Helper function to fetch video title for display purposes only
+async function fetchVideoTitleForDisplay(videoId, titleElement) {
+  try {
+    // First try to get from WordPress REST API if available
+    const response = await fetch(`/wp-json/youtube-channel-block/v1/video-title/${videoId}`);
+    
+    if (response.ok) {
+      const data = await response.json();
+      
+      if (data.title) {
+        const title = data.title;
+        
+        // Set display title only - no deep linking attributes
+        titleElement.textContent = title;
+        titleElement.setAttribute('data-display-title', title);
+        
+        // Also set on parent sidebar item for display purposes
+        const sidebarItem = titleElement.closest('.youtube-sidebar-item');
+        if (sidebarItem) {
+          sidebarItem.setAttribute('data-display-title', title);
+        }
+        
+        return;
+      }
+    }
+  } catch (error) {
+    console.log('Could not fetch title from WordPress API, using fallback');
+  }
+  
+  // Fallback: use a simple placeholder
+  const fallbackTitle = `Video ${videoId}`;
+  
+  titleElement.textContent = fallbackTitle;
+  titleElement.setAttribute('data-display-title', fallbackTitle);
+  
+  // Also set on parent sidebar item for display purposes
+  const sidebarItem = titleElement.closest('.youtube-sidebar-item');
+  if (sidebarItem) {
+    sidebarItem.setAttribute('data-display-title', fallbackTitle);
+  }
+}
+
+// Helper function to fetch video title for deep linking purposes
+async function fetchDeepLinkingTitle(videoId, sidebarItem) {
+  try {
+    // First try to get from WordPress REST API if available
+    const response = await fetch(`/wp-json/youtube-channel-block/v1/video-title/${videoId}`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.title) {
+        const title = data.title;
+        const slug = createSlug(title);
+        
+        // Set deep linking attributes only
+        sidebarItem.setAttribute('data-video-title', title);
+        sidebarItem.setAttribute('data-video-slug', slug);
+        
+        // Update URL hash with the deep linking title
+        updateUrlHashWithTitle(title);
+        return;
+      }
+    }
+  } catch (error) {
+    console.log('Could not fetch title from WordPress API for deep linking, using fallback');
+  }
+  
+  // Fallback: use video ID for deep linking
+  const fallbackTitle = `Video ${videoId}`;
+  const slug = createSlug(fallbackTitle);
+  
+  sidebarItem.setAttribute('data-video-title', fallbackTitle);
+  sidebarItem.setAttribute('data-video-slug', slug);
+  
+  // Update URL hash with the fallback title
+  updateUrlHashWithTitle(fallbackTitle);
+}
+
+// Helper function to fetch video title for deep linking
 async function fetchVideoTitle(videoId, titleElement) {
   try {
     // First try to get from WordPress REST API if available
