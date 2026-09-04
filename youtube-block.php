@@ -34,35 +34,66 @@ define( 'YOUTUBE_BLOCK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
  * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
  */
 function youtube_block_youtube_block_block_init() {
-	/**
-	 * Registers the block(s) metadata from the `blocks-manifest.php` and registers the block type(s)
-	 * based on the registered block metadata.
-	 * Added in WordPress 6.8 to simplify the block metadata registration process added in WordPress 6.7.
-	 *
-	 * @see https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
-	 */
-	if ( function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
-		wp_register_block_types_from_metadata_collection( __DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php' );
+	$manifest_path = __DIR__ . '/build/blocks-manifest.php';
+	$build_dir = __DIR__ . '/build';
+	$block_dir = $build_dir . '/youtube-block';
+
+	// Check if blocks-manifest.php exists before using collection APIs
+	if ( file_exists( $manifest_path ) ) {
+		/**
+		 * Registers the block(s) metadata from the `blocks-manifest.php` and registers the block type(s)
+		 * based on the registered block metadata.
+		 * Added in WordPress 6.8 to simplify the block metadata registration process added in WordPress 6.7.
+		 * This function handles both metadata registration AND block type registration with assets.
+		 *
+		 * @see https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
+		 */
+		if ( function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
+			wp_register_block_types_from_metadata_collection( $build_dir, $manifest_path );
+			return;
+		}
+
+		/**
+		 * Registers the block(s) metadata from the `blocks-manifest.php` file.
+		 * Added to WordPress 6.7 to improve the performance of block type registration.
+		 * Note: This only registers the collection metadata, not the block types themselves.
+		 *
+		 * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
+		 */
+		if ( function_exists( 'wp_register_block_metadata_collection' ) ) {
+			wp_register_block_metadata_collection( $build_dir, $manifest_path );
+		}
+
+		/**
+		 * Registers the block type(s) from the manifest file.
+		 * Use register_block_type_from_metadata to properly resolve file: protocol asset paths.
+		 * This ensures JavaScript and CSS assets are correctly registered and enqueued.
+		 *
+		 * @see https://developer.wordpress.org/reference/functions/register_block_type_from_metadata/
+		 */
+		$manifest_data = require $manifest_path;
+		foreach ( array_keys( $manifest_data ) as $block_type ) {
+			$block_path = $build_dir . "/{$block_type}";
+			if ( file_exists( $block_path . '/block.json' ) ) {
+				// register_block_type_from_metadata automatically resolves file: protocol
+				// and registers all assets (scripts, styles) defined in block.json
+				register_block_type_from_metadata( $block_path );
+			}
+		}
 		return;
 	}
 
-	/**
-	 * Registers the block(s) metadata from the `blocks-manifest.php` file.
-	 * Added to WordPress 6.7 to improve the performance of block type registration.
-	 *
-	 * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
-	 */
-	if ( function_exists( 'wp_register_block_metadata_collection' ) ) {
-		wp_register_block_metadata_collection( __DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php' );
+	// Fallback: Use standard block registration if manifest doesn't exist
+	// This handles cases where the build hasn't been run or manifest wasn't generated
+	if ( file_exists( $block_dir . '/block.json' ) ) {
+		register_block_type_from_metadata( $block_dir );
+		return;
 	}
-	/**
-	 * Registers the block type(s) in the `blocks-manifest.php` file.
-	 *
-	 * @see https://developer.wordpress.org/reference/functions/register_block_type/
-	 */
-	$manifest_data = require __DIR__ . '/build/blocks-manifest.php';
-	foreach ( array_keys( $manifest_data ) as $block_type ) {
-		register_block_type( __DIR__ . "/build/{$block_type}" );
+
+	// If we get here, the build files don't exist
+	// Log a warning but don't break the site
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		error_log( 'YouTube Channel Block: Build files not found. Please run `npm run build` to compile the block assets.' );
 	}
 }
 add_action( 'init', 'youtube_block_youtube_block_block_init' );
